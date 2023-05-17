@@ -84,8 +84,11 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                     child: const Row(
                       children: <Widget>[
+                        SizedBox(
+                          width: 5,
+                        ),
                         Icon(
-                          Icons.add,
+                          Icons.mail_outline_rounded,
                           color: Color.fromARGB(255, 255, 176, 57),
                           size: 20,
                         ),
@@ -95,9 +98,11 @@ class _ChatPageState extends State<ChatPage> {
                         Padding(
                           padding: EdgeInsets.only(right: 8),
                           child: Text(
-                            "新訊息",
+                            "邀請",
                             style: TextStyle(
-                                fontSize: 13, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 209, 152, 66)),
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 209, 152, 66)),
                           ),
                         ),
                       ],
