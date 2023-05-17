@@ -9,7 +9,84 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  void showModal() {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Container(
+                height: MediaQuery.of(context).size.height * 0.75,
+                color: Color(0xff737373),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20),
+                        topLeft: Radius.circular(20)),
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Center(
+                        child: Container(
+                          height: 4,
+                          width: 50,
+                          color: Colors.grey.shade200,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      // ListView.builder(
+                      //   itemCount: menuItems.length,
+                      //   shrinkWrap: true,
+                      //   physics: NeverScrollableScrollPhysics(),
+                      //   itemBuilder: (context, index) {
+                      //     return Container(
+                      //       padding: EdgeInsets.only(top: 10, bottom: 10),
+                      //       child: ListTile(
+                      //         leading: Container(
+                      //           decoration: BoxDecoration(
+                      //             borderRadius: BorderRadius.circular(30),
+                      //             color: menuItems[index].color.shade50,
+                      //           ),
+                      //           height: 50,
+                      //           width: 50,
+                      //           child: Icon(
+                      //             menuItems[index].icons,
+                      //             size: 20,
+                      //             color: menuItems[index].color.shade400,
+                      //           ),
+                      //         ),
+                      //         title: Text(menuItems[index].text),
+                      //       ),
+                      //     );
+                      //   },
+                      // )
+                    ],
+                  ),
+                ),
+              );
+            }
+          );
+        });
+  }
+
   List<ChatUsers> chatUsers = [
+    ChatUsers(
+        text: "Jane Russel",
+        secondaryText: "Awesome Setup",
+        image: "images/userImage1.jpeg",
+        time: "Now"),
+    ChatUsers(
+        text: "Jane Russel",
+        secondaryText: "Awesome Setup",
+        image: "images/userImage1.jpeg",
+        time: "Now"),
     ChatUsers(
         text: "Jane Russel",
         secondaryText: "Awesome Setup",
@@ -82,7 +159,7 @@ class _ChatPageState extends State<ChatPage> {
                       borderRadius: BorderRadius.circular(30),
                       color: Colors.orange[50],
                     ),
-                    child: const Row(
+                    child: Row(
                       children: <Widget>[
                         SizedBox(
                           width: 5,
@@ -95,14 +172,21 @@ class _ChatPageState extends State<ChatPage> {
                         SizedBox(
                           width: 5,
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(right: 8),
-                          child: Text(
-                            "邀請",
-                            style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromARGB(255, 209, 152, 66)),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              showModal();
+                            });
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child: Text(
+                              "好友邀請",
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromARGB(255, 224, 171, 91)),
+                            ),
                           ),
                         ),
                       ],
