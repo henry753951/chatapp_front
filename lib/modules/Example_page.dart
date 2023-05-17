@@ -36,6 +36,9 @@ class _ExamplePageState extends State<ExamplePage> {
                         )),
                   ],
                 ),
+                SizedBox(
+                  height: 25,
+                ),
                 Stack(children: [
                   CircleAvatar(
                     radius: 50.0,
@@ -81,7 +84,7 @@ class _ExamplePageState extends State<ExamplePage> {
         Spacer(),
         LogoutBtn(),
         SizedBox(
-          height: 10,
+          height: 35,
         ),
       ],
     ));
@@ -99,7 +102,7 @@ class LogoutBtn extends StatelessWidget {
       height: 50,
       width: 350,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(50),
           gradient: LinearGradient(
             colors: [Colors.red, Colors.orange],
             begin: Alignment.centerLeft,
@@ -111,7 +114,7 @@ class LogoutBtn extends StatelessWidget {
           child: Text(
             "登出",
             style: TextStyle(
-                color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
+                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),
       ),
