@@ -74,38 +74,48 @@ class _ExamplePageState extends State<ExamplePage> {
                   title: "phone",
                   value: "phone",
                 ),
-                SizedBox(
-                  height: 50,
-                ),
-                Container(
-                  height: 50,
-                  width: 350,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      gradient: LinearGradient(
-                        colors: [Colors.red, Colors.orange],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      )),
-                  child: Center(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        "登出",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
         ),
+        Spacer(),
+        LogoutBtn(),
+        SizedBox(
+          height: 10,
+        ),
       ],
     ));
+  }
+}
+
+class LogoutBtn extends StatelessWidget {
+  const LogoutBtn({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 50,
+      width: 350,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          gradient: LinearGradient(
+            colors: [Colors.red, Colors.orange],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          )),
+      child: Center(
+        child: TextButton(
+          onPressed: () {},
+          child: Text(
+            "登出",
+            style: TextStyle(
+                color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+    );
   }
 }
 
