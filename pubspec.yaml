@@ -18,7 +18,7 @@ dependencies:
   flutter_login: ^4.1.1
   email_validator: ^2.1.17
   get: ^4.6.5
-  google_fonts: ^3.0.1
+  google_fonts: ^4.0.4
   hexcolor: ^3.0.1
 
 dev_dependencies:

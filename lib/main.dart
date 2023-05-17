@@ -1,3 +1,4 @@
+import 'package:chatapp/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'pages/login_page.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         debugShowCheckedModeBanner: false,
-        home: MainPage(),
+        home: LoginScreen(),
       ),
     );
   }

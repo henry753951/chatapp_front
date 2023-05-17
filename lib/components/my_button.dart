@@ -1,28 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 class MyButton extends StatelessWidget {
-  final Function()? onTap;
-
-  const MyButton({super.key, required this.onTap});
+  final Function()? onPressed;
+  final String buttonText;
+  const MyButton(
+      {super.key, required this.onPressed, required this.buttonText});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(25),
-        margin: const EdgeInsets.symmetric(horizontal: 25),
-        decoration: BoxDecoration(
-          color: Colors.black,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: const Center(
+      onTap: onPressed,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(0, 14, 0, 10),
+          height: 55,
+          width: 275,
+          decoration: BoxDecoration(
+            color: HexColor('#44564a'),
+            borderRadius: BorderRadius.circular(30),
+          ),
           child: Text(
-            "Sign In",
-            style: TextStyle(
+            buttonText,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
               color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),
