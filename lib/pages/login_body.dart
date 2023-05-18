@@ -1,4 +1,4 @@
-import 'package:chatapp/modules/main_page.dart';
+import 'package:chatapp/pages/main_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -136,7 +136,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                                     height: 10,
                                   ),
                                   MyTextField(
-                                    controller: emailController,
+                                    controller: UserNameController,
                                     hintText: "hello@gmail.com",
                                     obscureText: false,
                                   ),
