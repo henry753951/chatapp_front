@@ -23,6 +23,20 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     ChatMessage(message: "Hello Jane, I'm good what about you", type: MessageType.Sender),
     ChatMessage(message: "I'm fine, Working from home", type: MessageType.Receiver),
     ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
+    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
+    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
+    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
+    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
+    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
+    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
+    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
+    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
+    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
+    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
+    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
+    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
+    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
+    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
   ];
 
   List<SendMenuItems> menuItems = [
@@ -59,7 +73,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                 ListView.builder(
                   itemCount: menuItems.length,
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: BouncingScrollPhysics(),
                   itemBuilder: (context, index){
                     return Container(
                       padding: EdgeInsets.only(top: 10,bottom: 10),
@@ -95,8 +109,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           ListView.builder(
             itemCount: chatMessage.length,
             shrinkWrap: true,
-            padding: EdgeInsets.only(top: 10,bottom: 10),
-            physics: NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.only(top: 10,bottom: 90),
+            physics: BouncingScrollPhysics(),
             itemBuilder: (context, index){
             return ChatBubble(
               chatMessage: chatMessage[index],

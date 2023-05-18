@@ -1,4 +1,5 @@
-import 'package:chatapp/modules/chat_detail_page.dart';
+import 'package:chatapp/pages/chat_detail_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ChatUsersList extends StatefulWidget {
@@ -22,7 +23,7 @@ class _ChatUsersListState extends State<ChatUsersList> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
           return ChatDetailPage();
         }));
       },
@@ -36,15 +37,15 @@ class _ChatUsersListState extends State<ChatUsersList> {
                   Stack(
                     children: [
                       CircleAvatar(
-                        radius: 24.0,
+                        radius: 35.0,
                         backgroundColor: Color.fromARGB(255, 226, 235, 113),
                       ),
                       Positioned(
                         right: 0,
                         bottom: 0,
                         child: Container(
-                          height: 16,
-                          width: 16,
+                          height: 20,
+                          width: 20,
                           decoration: BoxDecoration(
                               color: Color.fromARGB(255, 67, 190, 72),
                               shape: BoxShape.circle,
@@ -64,14 +65,16 @@ class _ChatUsersListState extends State<ChatUsersList> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(widget.text),
+                          Text(widget.text,
+                              style: TextStyle(
+                                  fontSize: 18)),
                           SizedBox(
                             height: 6,
                           ),
                           Text(
                             widget.secondaryText,
                             style: TextStyle(
-                                fontSize: 14, color: Colors.grey.shade500),
+                                fontSize: 16, color: Colors.grey.shade500),
                           ),
                         ],
                       ),
@@ -83,7 +86,7 @@ class _ChatUsersListState extends State<ChatUsersList> {
             Text(
               widget.time,
               style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 13,
                   color: widget.isMessageRead
                       ? Colors.pink
                       : Colors.grey.shade500),
