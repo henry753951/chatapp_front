@@ -18,70 +18,71 @@ class _ExamplePageState extends State<ExamplePage> {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
-          child: Expanded(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Text("個人檔案",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          foreground: Paint()
-                            ..shader = const LinearGradient(
-                              colors: [Colors.red, Colors.orange],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                            ).createShader(Rect.fromLTWH(0, 0, 80, 70)),
-                        )),
-                  ],
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text("個人檔案",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        foreground: Paint()
+                          ..shader = const LinearGradient(
+                            colors: [Colors.red, Colors.orange],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          ).createShader(Rect.fromLTWH(0, 0, 80, 70)),
+                      )),
+                ],
+              ),
+              SizedBox(
+                height: 25,
+              ),
+              Stack(children: [
+                CircleAvatar(
+                  radius: 50.0,
+                  backgroundColor: Color.fromARGB(255, 226, 235, 113),
                 ),
-                Stack(children: [
-                  CircleAvatar(
-                    radius: 50.0,
-                    backgroundColor: Color.fromARGB(255, 226, 235, 113),
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 67, 190, 72),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 3.0)),
                   ),
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Container(
-                      height: 30,
-                      width: 30,
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 67, 190, 72),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 3.0)),
-                    ),
-                  )
-                ]),
-                info(
-                  icon: Icon(CupertinoIcons.brightness, color: Colors.orange),
-                  title: "性命",
-                  value: "姓名",
-                ),
-                info(
-                  icon: Icon(Icons.check_circle),
-                  title: "沒有",
-                  value: "mail",
-                ),
-                info(
-                  icon: Icon(Icons.check_circle),
-                  title: "birthday",
-                  value: "birthday",
-                ),
-                info(
-                  icon: Icon(Icons.check_circle),
-                  title: "phone",
-                  value: "phone",
-                ),
-              ],
-            ),
+                )
+              ]),
+              info(
+                icon: Icon(CupertinoIcons.brightness, color: Colors.orange),
+                title: "性命",
+                value: "姓名",
+              ),
+              info(
+                icon: Icon(Icons.check_circle),
+                title: "沒有",
+                value: "mail",
+              ),
+              info(
+                icon: Icon(Icons.check_circle),
+                title: "birthday",
+                value: "birthday",
+              ),
+              info(
+                icon: Icon(Icons.check_circle),
+                title: "phone",
+                value: "phone",
+              ),
+            ],
           ),
         ),
         Spacer(),
         LogoutBtn(),
         SizedBox(
-          height: 10,
+          height: 35,
         ),
       ],
     ));
@@ -99,7 +100,7 @@ class LogoutBtn extends StatelessWidget {
       height: 50,
       width: 350,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(50),
           gradient: LinearGradient(
             colors: [Colors.red, Colors.orange],
             begin: Alignment.centerLeft,
@@ -111,7 +112,7 @@ class LogoutBtn extends StatelessWidget {
           child: Text(
             "登出",
             style: TextStyle(
-                color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
+                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),
       ),
