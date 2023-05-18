@@ -1,4 +1,4 @@
-import 'package:chatapp/modules/Example_page.dart';
+import 'package:chatapp/pages/profile_page.dart';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

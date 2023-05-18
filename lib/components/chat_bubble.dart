@@ -1,5 +1,5 @@
 import 'package:chatapp/models/chat_message.dart';
-import 'package:chatapp/modules/chat_detail_page.dart';
+import 'package:chatapp/pages/chat_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

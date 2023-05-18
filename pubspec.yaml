@@ -21,6 +21,7 @@ dependencies:
   google_fonts: ^4.0.4
   hexcolor: ^3.0.1
   pinput: ^2.2.31
+  m_toast: ^0.2.0
 
 dev_dependencies:
   flutter_test:

@@ -40,14 +40,14 @@ class ChatDetailPageAppBar extends StatelessWidget
                   children: <Widget>[
                     Text(
                       "Jane Russel",
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                      style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
                     ),
                     SizedBox(
-                      height: 6,
+                      height: 2,
                     ),
                     Text(
-                      "Online",
-                      style: TextStyle(color: Colors.green, fontSize: 12),
+                      "線上",
+                      style: TextStyle(color: Colors.green, fontSize: 13),
                     ),
                   ],
                 ),

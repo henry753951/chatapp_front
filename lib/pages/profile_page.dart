@@ -1,7 +1,3 @@
-import 'package:chatapp/components/chat_bubble.dart';
-import 'package:chatapp/components/chat_detail_page_appbar.dart';
-import 'package:chatapp/models/chat_message.dart';
-import 'package:chatapp/models/send_menu_items.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -56,32 +52,40 @@ class _ExamplePageState extends State<ExamplePage> {
                   ),
                 )
               ]),
-              info(
-                icon: Icon(CupertinoIcons.brightness, color: Colors.orange),
-                title: "性命",
-                value: "姓名",
+              const SizedBox(
+                height: 10,
+              ),
+              Text("冬秉翰",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 75, 75, 75),
+                  )),
+              const SizedBox(
+                height: 35,
               ),
               info(
-                icon: Icon(Icons.check_circle),
-                title: "沒有",
-                value: "mail",
+                icon: Icon(CupertinoIcons.creditcard, color: Colors.orange),
+                title: "學號",
+                value: "A1105506",
               ),
               info(
-                icon: Icon(Icons.check_circle),
-                title: "birthday",
-                value: "birthday",
+                icon: Icon(Icons.cake_outlined, color: Colors.orange),
+                title: "生日",
+                value: "07/14",
               ),
               info(
-                icon: Icon(Icons.check_circle),
-                title: "phone",
-                value: "phone",
+                icon: Icon(CupertinoIcons.phone, color: Colors.orange),
+                title: "手機號碼",
+                value: "0965494854",
               ),
             ],
           ),
         ),
-        Spacer(),
+        const Spacer(),
+        
         LogoutBtn(),
-        SizedBox(
+        const SizedBox(
           height: 35,
         ),
       ],
