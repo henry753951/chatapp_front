@@ -19,7 +19,7 @@ class MyButton extends StatelessWidget {
           height: 55,
           width: 275,
           decoration: BoxDecoration(
-            color: HexColor('#44564a'),
+            color: HexColor('#00000'),
             borderRadius: BorderRadius.circular(30),
           ),
           child: Text(
