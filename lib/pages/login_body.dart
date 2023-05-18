@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:chatapp/components/my_button.dart';
 import 'package:chatapp/components/my_textfield.dart';
+import 'package:dio/dio.dart';
 
 class LoginBodyScreen extends StatefulWidget {
   const LoginBodyScreen({super.key});
@@ -12,10 +13,19 @@ class LoginBodyScreen extends StatefulWidget {
   State<LoginBodyScreen> createState() => _LoginBodyScreenState();
 }
 
+const BASEURL = "http://192.168.0.160:8080/auth/login";
+
 class _LoginBodyScreenState extends State<LoginBodyScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  void signUserIn() async {}
+
+  String result = "";
+  void signUserIn() async {
+    var path = BASEURL;
+    var params = {"username": "binhan", "password": "321356465"};
+    Response response = await Dio().post(path, queryParameters: params);
+    print(response.toString());
+  }
 
   void showErrorMessage(String message) {
     showDialog(
@@ -175,14 +185,14 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                         ),
                       ),
                     ),
-                    Transform.translate(
-                      offset: const Offset(0, -253),
-                      child: Image.asset(
-                        'lib/images/karbi.jpg',
-                        scale: 1.5,
-                        width: double.infinity,
-                      ),
-                    ),
+                    // Transform.translate(
+                    //   offset: const Offset(0, -253),
+                    //   child: Image.asset(
+                    //     'lib/images/no.jpg',
+                    //     scale: 1.5,
+                    //     width: double.infinity,
+                    //   ),
+                    // ),
                   ],
                 )
               ],
