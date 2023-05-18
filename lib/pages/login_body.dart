@@ -1,3 +1,4 @@
+import 'package:chatapp/modules/main_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,15 +17,16 @@ class LoginBodyScreen extends StatefulWidget {
 const BASEURL = "http://192.168.0.160:8080/auth/login";
 
 class _LoginBodyScreenState extends State<LoginBodyScreen> {
-  final emailController = TextEditingController();
+  final UserNameController = TextEditingController();
   final passwordController = TextEditingController();
-
-  String result = "";
   void signUserIn() async {
-    var path = BASEURL;
-    var params = {"username": "binhan", "password": "321356465"};
-    Response response = await Dio().post(path, queryParameters: params);
-    print(response.toString());
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MainPage(),
+      ),
+      (Route<dynamic> route) => false,
+    );
   }
 
   void showErrorMessage(String message) {
@@ -61,11 +63,32 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: HexColor("#fed8c3"),
-        body: ListView(
-          padding: const EdgeInsets.fromLTRB(0, 400, 0, 0),
-          shrinkWrap: true,
-          reverse: true,
+        body: Column(
           children: [
+            Expanded(
+              child: Center(
+                child: Container(
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text("ININDER",
+                          style: TextStyle(
+                            fontSize: 66,
+                            fontWeight: FontWeight.bold,
+                            foreground: Paint()
+                              ..shader = const LinearGradient(
+                                colors: [Colors.red, Colors.orange],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ).createShader(Rect.fromLTWH(0, 0, 80, 70)),
+                          )),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -185,14 +208,14 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                         ),
                       ),
                     ),
-                    // Transform.translate(
-                    //   offset: const Offset(0, -253),
-                    //   child: Image.asset(
-                    //     'lib/images/no.jpg',
-                    //     scale: 1.5,
-                    //     width: double.infinity,
-                    //   ),
-                    // ),
+                    Transform.translate(
+                      offset: const Offset(0, -253),
+                      child: Image.asset(
+                        'lib/images/karbi.jpg',
+                        scale: 1.5,
+                        width: double.infinity,
+                      ),
+                    ),
                   ],
                 )
               ],

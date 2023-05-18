@@ -26,6 +26,7 @@ class _MainPageState extends State<MainPage> {
             },
             child: PageView(
               controller: _pageController,
+
               onPageChanged: (page) {
                 setState(() {
                   FocusScopeNode currentFocus = FocusScope.of(context);
@@ -64,6 +65,12 @@ class _MainPageState extends State<MainPage> {
       currentIndex: _currentIndex,
       onTap: (index) {
         setState(() {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+          _pageController.animateToPage(index,
+              duration: Duration(milliseconds: 250), curve: Curves.ease);
           _currentIndex = index;
         });
       },
