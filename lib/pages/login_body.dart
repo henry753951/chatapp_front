@@ -1,3 +1,4 @@
+import 'package:chatapp/modules/main_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,9 +14,17 @@ class LoginBodyScreen extends StatefulWidget {
 }
 
 class _LoginBodyScreenState extends State<LoginBodyScreen> {
-  final emailController = TextEditingController();
+  final UserNameController = TextEditingController();
   final passwordController = TextEditingController();
-  void signUserIn() async {}
+  void signUserIn() async {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MainPage(),
+      ),
+      (Route<dynamic> route) => false,
+    );
+  }
 
   void showErrorMessage(String message) {
     showDialog(
@@ -56,7 +65,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
             Expanded(
               child: Center(
                 child: Container(
-                  width: MediaQuery.of(context).size.width,
+                  width: double.infinity,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -81,7 +90,6 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Container(
-                  height: 535,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: HexColor("#ffffff"),
@@ -125,8 +133,8 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                                 height: 10,
                               ),
                               MyTextField(
-                                controller: emailController,
-                                hintText: "hello@gmail.com",
+                                controller: UserNameController,
+                                hintText: "ex : a1105506",
                                 obscureText: false,
                               ),
                               Padding(
@@ -162,7 +170,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                               ),
                               MyButton(
                                 onPressed: signUserIn,
-                                buttonText: 'Submit',
+                                buttonText: '登入  /  註冊',
                               ),
                               const SizedBox(
                                 height: 12,
