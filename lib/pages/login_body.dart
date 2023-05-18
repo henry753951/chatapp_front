@@ -1,9 +1,11 @@
+import 'package:chatapp/modules/main_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:chatapp/components/my_button.dart';
 import 'package:chatapp/components/my_textfield.dart';
+import 'package:dio/dio.dart';
 
 class LoginBodyScreen extends StatefulWidget {
   const LoginBodyScreen({super.key});
@@ -12,10 +14,20 @@ class LoginBodyScreen extends StatefulWidget {
   State<LoginBodyScreen> createState() => _LoginBodyScreenState();
 }
 
+const BASEURL = "http://192.168.0.160:8080/auth/login";
+
 class _LoginBodyScreenState extends State<LoginBodyScreen> {
-  final emailController = TextEditingController();
+  final UserNameController = TextEditingController();
   final passwordController = TextEditingController();
-  void signUserIn() async {}
+  void signUserIn() async {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MainPage(),
+      ),
+      (Route<dynamic> route) => false,
+    );
+  }
 
   void showErrorMessage(String message) {
     showDialog(
@@ -51,11 +63,32 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: HexColor("#fed8c3"),
-        body: ListView(
-          padding: const EdgeInsets.fromLTRB(0, 400, 0, 0),
-          shrinkWrap: true,
-          reverse: true,
+        body: Column(
           children: [
+            Expanded(
+              child: Center(
+                child: Container(
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text("ININDER",
+                          style: TextStyle(
+                            fontSize: 66,
+                            fontWeight: FontWeight.bold,
+                            foreground: Paint()
+                              ..shader = const LinearGradient(
+                                colors: [Colors.red, Colors.orange],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ).createShader(Rect.fromLTWH(0, 0, 80, 70)),
+                          )),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
