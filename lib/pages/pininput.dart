@@ -1,0 +1,222 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:pinput/pinput.dart';
+import 'dart:async';
+
+class VerificationCodeScreen extends StatefulWidget {
+  const VerificationCodeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<VerificationCodeScreen> createState() => _VerificationCodeScreenState();
+}
+
+class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
+  @override
+  Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    bool ResentButtonDisabled = false;
+
+    @override
+    void initState() {
+      ResentButtonDisabled = false;
+    }
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: height * 0.07,
+              ),
+              Text(
+                '請輸入驗證碼',
+                style: GoogleFonts.urbanist(
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black,
+                  fontSize: 32.0,
+                ),
+              ),
+              const SizedBox(
+                height: 8.0,
+              ),
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '請輸入發送到email的驗證碼 ',
+                      style: GoogleFonts.urbanist(
+                        fontSize: 14.0,
+                        color: const Color(0xff808d9e),
+                        fontWeight: FontWeight.w400,
+                        height: 1.5,
+                      ),
+                    ),
+                    TextSpan(
+                      text: '這邊放學號string+mail.nuk.edu.tw',
+                      style: GoogleFonts.urbanist(
+                        fontSize: 14.0,
+                        color: const Color(0xff005BE0),
+                        fontWeight: FontWeight.w400,
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: height * 0.1,
+              ),
+
+              /// pinput package we will use here
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: SizedBox(
+                  width: width,
+                  child: Pinput(
+                    length: 6,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    defaultPinTheme: PinTheme(
+                      height: 60.0,
+                      width: 60.0,
+                      textStyle: GoogleFonts.urbanist(
+                        fontSize: 24.0,
+                        color: Colors.orange,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.black.withOpacity(0.5),
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    focusedPinTheme: PinTheme(
+                      height: 60.0,
+                      width: 60.0,
+                      textStyle: GoogleFonts.urbanist(
+                        fontSize: 24.0,
+                        color: const Color.fromARGB(255, 0, 0, 0),
+                        fontWeight: FontWeight.w700,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        shape: BoxShape.rectangle,
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.orange,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(
+                height: 16.0,
+              ),
+              Center(
+                child: TextButton(
+                  child: Text(
+                    '重新發送認證',
+                    style: GoogleFonts.urbanist(
+                      fontSize: 14.0,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  onPressed: () {},
+                ),
+              ),
+
+              ///
+
+              const SizedBox(
+                height: 16.0,
+              ),
+              Center(
+                child: TextButton(
+                  onPressed: null,
+                  child: CountdownWidget(
+                    endTime: DateTime.now().add(const Duration(minutes: 3)),
+                  ),
+                ),
+              ),
+
+              /// Continue Button
+              const Expanded(child: SizedBox()),
+              InkWell(
+                onTap: () {},
+                borderRadius: BorderRadius.circular(30.0),
+                child: Ink(
+                  height: 55.0,
+                  width: width,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30.0),
+                    color: Colors.black,
+                  ),
+                  child: Center(
+                    child: Text(
+                      '下一步',
+                      style: GoogleFonts.urbanist(
+                        fontSize: 15.0,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(
+                height: 16.0,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CountdownWidget extends StatefulWidget {
+  final DateTime endTime;
+
+  const CountdownWidget({super.key, required this.endTime});
+
+  @override
+  State<CountdownWidget> createState() => _CountdownWidgetState();
+}
+
+class _CountdownWidgetState extends State<CountdownWidget> {
+  Timer? _timer;
+  bool visable = true;
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (timer) => setState(() {}),
+    );
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text("${widget.endTime.difference(DateTime.now()).inSeconds}" + "秒");
+  }
+}
