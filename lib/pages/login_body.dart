@@ -92,131 +92,101 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Stack(
-                  children: [
-                    Container(
-                      height: 535,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: HexColor("#ffffff"),
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(40),
-                          topRight: Radius.circular(40),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Log In",
-                              style: GoogleFonts.poppins(
-                                fontSize: 40,
-                                fontWeight: FontWeight.bold,
-                                color: HexColor("#4f4f4f"),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(15, 0, 0, 20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Email",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 18,
-                                      color: HexColor("#8d8d8d"),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  MyTextField(
-                                    controller: emailController,
-                                    hintText: "hello@gmail.com",
-                                    obscureText: false,
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                                    child: Text(
-                                      _errorMessage,
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 12,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    "Password",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 18,
-                                      color: HexColor("#8d8d8d"),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  MyTextField(
-                                    controller: passwordController,
-                                    hintText: "**************",
-                                    obscureText: true,
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  MyButton(
-                                    onPressed: signUserIn,
-                                    buttonText: 'Submit',
-                                  ),
-                                  const SizedBox(
-                                    height: 12,
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(35, 0, 0, 0),
-                                    child: Row(
-                                      children: [
-                                        Text("Don't have an account?",
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 15,
-                                              color: HexColor("#8d8d8d"),
-                                            )),
-                                        TextButton(
-                                            child: Text(
-                                              "Sign Up",
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 15,
-                                                color: HexColor("#44564a"),
-                                              ),
-                                            ),
-                                            onPressed: () => {}),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: HexColor("#ffffff"),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(40),
+                      topRight: Radius.circular(40),
                     ),
-                    Transform.translate(
-                      offset: const Offset(0, -253),
-                      child: Image.asset(
-                        'lib/images/karbi.jpg',
-                        scale: 1.5,
-                        width: double.infinity,
-                      ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Text(
+                            "登入",
+                            style: GoogleFonts.poppins(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              color: HexColor("#4f4f4f"),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(15, 0, 0, 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "學號",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  color: HexColor("#8d8d8d"),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              MyTextField(
+                                controller: UserNameController,
+                                hintText: "ex : a1105506",
+                                obscureText: false,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                                child: Text(
+                                  _errorMessage,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 12,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "密碼",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  color: HexColor("#8d8d8d"),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              MyTextField(
+                                controller: passwordController,
+                                hintText: "**************",
+                                obscureText: true,
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              MyButton(
+                                onPressed: signUserIn,
+                                buttonText: '登入  /  註冊',
+                              ),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 )
               ],
             ),
