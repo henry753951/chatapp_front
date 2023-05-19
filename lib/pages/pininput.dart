@@ -11,16 +11,14 @@ class VerificationCodeScreen extends StatefulWidget {
 }
 
 class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
+  bool resentButtonDisabled = true;
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    bool ResentButtonDisabled = false;
 
     @override
-    void initState() {
-      ResentButtonDisabled = false;
-    }
+    void initState() {}
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -49,19 +47,19 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                 text: TextSpan(
                   children: [
                     TextSpan(
-                      text: '請輸入發送到email的驗證碼 ',
+                      text: '請輸入發送到以下郵件的驗證碼\n',
                       style: GoogleFonts.urbanist(
-                        fontSize: 14.0,
+                        fontSize: 15.0,
                         color: const Color(0xff808d9e),
                         fontWeight: FontWeight.w400,
                         height: 1.5,
                       ),
                     ),
                     TextSpan(
-                      text: '這邊放學號string+mail.nuk.edu.tw',
-                      style: GoogleFonts.urbanist(
+                      text: 'a1105534@mail.nuk.edu.tw',
+                      style: TextStyle(
                         fontSize: 14.0,
-                        color: const Color(0xff005BE0),
+                        color: Colors.orange,
                         fontWeight: FontWeight.w400,
                         height: 1.5,
                       ),
@@ -87,14 +85,15 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                       width: 60.0,
                       textStyle: GoogleFonts.urbanist(
                         fontSize: 24.0,
-                        color: Colors.orange,
+                        color: Colors.black,
                         fontWeight: FontWeight.w700,
                       ),
                       decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         shape: BoxShape.rectangle,
                         color: Colors.white,
                         border: Border.all(
-                          color: Colors.black.withOpacity(0.5),
+                          color: Color.fromARGB(255, 141, 141, 141),
                           width: 1.0,
                         ),
                       ),
@@ -112,7 +111,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                         shape: BoxShape.rectangle,
                         color: Colors.white,
                         border: Border.all(
-                          color: Colors.orange,
+                          color: Color.fromARGB(255, 0, 0, 0),
                           width: 1.0,
                         ),
                       ),
@@ -125,32 +124,34 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                 height: 16.0,
               ),
               Center(
-                child: TextButton(
-                  child: Text(
-                    '重新發送認證',
-                    style: GoogleFonts.urbanist(
-                      fontSize: 14.0,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  onPressed: () {},
-                ),
+                child: !resentButtonDisabled
+                    ? TextButton(
+                        child: Text(
+                          '重新發送認證',
+                          style: GoogleFonts.urbanist(
+                            fontSize: 14.0,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            resentButtonDisabled = true;
+                          });
+                        },
+                      )
+                    : CountdownWidget(
+                        endTime:
+                            DateTime.now().add(const Duration(seconds: 120)),
+                        callback: () {
+                          setState(() {
+                            resentButtonDisabled = false;
+                          });
+                        },
+                      ),
               ),
 
               ///
-
-              const SizedBox(
-                height: 16.0,
-              ),
-              Center(
-                child: TextButton(
-                  onPressed: null,
-                  child: CountdownWidget(
-                    endTime: DateTime.now().add(const Duration(minutes: 3)),
-                  ),
-                ),
-              ),
 
               /// Continue Button
               const Expanded(child: SizedBox()),
@@ -190,8 +191,9 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
 
 class CountdownWidget extends StatefulWidget {
   final DateTime endTime;
-
-  const CountdownWidget({super.key, required this.endTime});
+  final void Function() callback;
+  const CountdownWidget(
+      {super.key, required this.endTime, required this.callback});
 
   @override
   State<CountdownWidget> createState() => _CountdownWidgetState();
@@ -199,14 +201,19 @@ class CountdownWidget extends StatefulWidget {
 
 class _CountdownWidgetState extends State<CountdownWidget> {
   Timer? _timer;
-  bool visable = true;
+  void TimerFunc(Timer timer) {
+    if (widget.endTime.difference(DateTime.now()).inSeconds <= 0) {
+      _timer?.cancel();
+      widget.callback();
+    } else {
+      setState(() {});
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (timer) => setState(() {}),
-    );
+    _timer = Timer.periodic(const Duration(seconds: 1), TimerFunc);
   }
 
   @override
@@ -217,6 +224,8 @@ class _CountdownWidgetState extends State<CountdownWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Text("${widget.endTime.difference(DateTime.now()).inSeconds}" + "秒");
+    return Text("${widget.endTime.difference(DateTime.now()).inSeconds} " + "秒",
+        style: const TextStyle(
+            fontSize: 16.0, color: Colors.black, fontWeight: FontWeight.w500));
   }
 }
