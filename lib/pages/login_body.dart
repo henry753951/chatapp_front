@@ -20,14 +20,24 @@ const BASEURL = "http://192.168.0.160:8080/auth/login";
 class _LoginBodyScreenState extends State<LoginBodyScreen> {
   final UserNameController = TextEditingController();
   final passwordController = TextEditingController();
+
+  String username = "";
+  String password = "";
+
   void signUserIn() async {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => VerificationCodeScreen(),
-      ),
-      (Route<dynamic> route) => false,
-    );
+    Dio dio = new Dio();
+    Response response =
+        await dio.post(BASEURL, data: {username: username, password: password});
+    var data = response;
+    print(data);
+
+    // Navigator.pushAndRemoveUntil(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => VerificationCodeScreen(),
+    //   ),
+    //   (Route<dynamic> route) => false,
+    // );
   }
 
   void showErrorMessage(String message) {
@@ -137,6 +147,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                                 height: 10,
                               ),
                               MyTextField(
+                                onchanged: (text) => {username = text},
                                 controller: UserNameController,
                                 hintText: "ex : a1105506",
                                 obscureText: false,
@@ -165,6 +176,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                                 height: 10,
                               ),
                               MyTextField(
+                                onchanged: (text) => {password = text},
                                 controller: passwordController,
                                 hintText: "**************",
                                 obscureText: true,
