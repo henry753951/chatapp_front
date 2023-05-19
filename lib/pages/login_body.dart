@@ -1,4 +1,5 @@
 import 'package:chatapp/pages/main_page.dart';
+import 'package:chatapp/pages/pininput.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,7 +24,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (context) => MainPage(),
+        builder: (context) => VerificationCodeScreen(),
       ),
       (Route<dynamic> route) => false,
     );
