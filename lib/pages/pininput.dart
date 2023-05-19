@@ -1,7 +1,12 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:m_toast/m_toast.dart';
 import 'package:pinput/pinput.dart';
 import 'dart:async';
+
+import 'main_page.dart';
 
 class VerificationCodeScreen extends StatefulWidget {
   const VerificationCodeScreen({Key? key}) : super(key: key);
@@ -12,6 +17,31 @@ class VerificationCodeScreen extends StatefulWidget {
 
 class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
   bool resentButtonDisabled = true;
+  String code = "";
+  final ShowMToast toast = ShowMToast();
+  void submitCode() async {
+    var auth_box = await Hive.openBox('auth');
+    var token = auth_box.get("token");
+    Dio dio = new Dio();
+    dio.options.headers["authorization"] = "Bearer ${token}";
+    Response response =
+        await dio.post("http://192.168.0.70:8080/auth/verify", data: code);
+    print(response.data);
+    if (response.data["msg"] == "驗證成功") {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MainPage(),
+        ),
+        (Route<dynamic> route) => false,
+      );
+    } else {
+      toast.errorToast(context,
+          alignment: Alignment.topLeft, message: response.data["msg"]);
+      auth_box.put("token", response.data["data"]);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -77,6 +107,9 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                 child: SizedBox(
                   width: width,
                   child: Pinput(
+                    onChanged: (value) => {
+                      code = value,
+                    },
                     length: 6,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -156,7 +189,9 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
               /// Continue Button
               const Expanded(child: SizedBox()),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  submitCode();
+                },
                 borderRadius: BorderRadius.circular(30.0),
                 child: Ink(
                   height: 55.0,

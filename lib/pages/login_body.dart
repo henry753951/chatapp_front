@@ -1,4 +1,4 @@
-import 'package:chatapp/pages/main_page.dart';
+
 import 'package:chatapp/pages/pininput.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,7 @@ class LoginBodyScreen extends StatefulWidget {
   State<LoginBodyScreen> createState() => _LoginBodyScreenState();
 }
 
-const BASEURL = "http://192.168.0.131:8080/auth/login";
+const BASEURL = "http://192.168.0.70:8080/auth/login";
 
 class _LoginBodyScreenState extends State<LoginBodyScreen> {
   final UserNameController = TextEditingController();
@@ -29,6 +29,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
 
   void signUserIn() async {
     var auth_box = await Hive.openBox('auth');
+    var token = auth_box.get("token");
     print("data");
     Dio dio = new Dio();
     setState(() {
