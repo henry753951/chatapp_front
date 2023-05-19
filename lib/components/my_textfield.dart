@@ -17,11 +17,9 @@ class MyTextField extends StatefulWidget {
 
   @override
   _MyTextFieldState createState() => _MyTextFieldState();
-
 }
 
 class _MyTextFieldState extends State<MyTextField> {
-
   @override
   Widget build(BuildContext context) {
     return Container(
