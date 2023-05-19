@@ -16,6 +16,13 @@ class MyTextField extends StatefulWidget {
   });
 
   @override
+  _MyTextFieldState createState() => _MyTextFieldState();
+
+}
+
+class _MyTextFieldState extends State<MyTextField> {
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -24,14 +31,14 @@ class MyTextField extends StatefulWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: TextField(
-          onChanged: onchanged,
-          controller: controller,
-          obscureText: obscureText,
+          onChanged: widget.onchanged,
+          controller: widget.controller,
+          obscureText: widget.obscureText,
           // transparent all
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.transparent,
-            hintText: hintText,
+            hintText: widget.hintText,
             hintStyle: const TextStyle(
               color: Colors.grey,
               fontSize: 14,
@@ -46,11 +53,5 @@ class MyTextField extends StatefulWidget {
         ),
       ),
     );
-  }
-
-  @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    throw UnimplementedError();
   }
 }

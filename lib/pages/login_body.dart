@@ -7,6 +7,8 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:chatapp/components/my_button.dart';
 import 'package:chatapp/components/my_textfield.dart';
 import 'package:dio/dio.dart';
+import 'package:hive/hive.dart';
+import 'package:m_toast/m_toast.dart';
 
 class LoginBodyScreen extends StatefulWidget {
   const LoginBodyScreen({super.key});
@@ -15,29 +17,39 @@ class LoginBodyScreen extends StatefulWidget {
   State<LoginBodyScreen> createState() => _LoginBodyScreenState();
 }
 
-const BASEURL = "http://192.168.0.160:8080/auth/login";
+const BASEURL = "http://192.168.0.131:8080/auth/login";
 
 class _LoginBodyScreenState extends State<LoginBodyScreen> {
   final UserNameController = TextEditingController();
   final passwordController = TextEditingController();
-
+  final ShowMToast toast = ShowMToast();
+  bool loading = false;
   String username = "";
   String password = "";
 
   void signUserIn() async {
+    var auth_box = Hive.box('auth');
+    print("data");
     Dio dio = new Dio();
-    Response response =
-        await dio.post(BASEURL, data: {username: username, password: password});
-    var data = response;
-    print(data);
-
-    // Navigator.pushAndRemoveUntil(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => VerificationCodeScreen(),
-    //   ),
-    //   (Route<dynamic> route) => false,
-    // );
+    setState(() {
+      loading = true;
+    });
+    Response response = await dio
+        .post(BASEURL, data: {"username": username, "password": password});
+    var data = response.data;
+    if (data["msg"] == "成功登入") {
+      auth_box.put("token", data["data"]["token"]);
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => VerificationCodeScreen(),
+        ),
+        (Route<dynamic> route) => false,
+      );
+    } else {
+      toast.errorToast(context,
+          alignment: Alignment.topLeft, message: "帳號或密碼錯誤");
+    }
   }
 
   void showErrorMessage(String message) {
@@ -185,6 +197,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                                 height: 20,
                               ),
                               MyButton(
+                                enabled: !loading,
                                 onPressed: signUserIn,
                                 buttonText: '登入  /  註冊',
                               ),
