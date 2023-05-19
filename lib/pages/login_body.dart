@@ -28,7 +28,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
   String password = "";
 
   void signUserIn() async {
-    var auth_box = Hive.box('auth');
+    var auth_box = await Hive.openBox('auth');
     print("data");
     Dio dio = new Dio();
     setState(() {

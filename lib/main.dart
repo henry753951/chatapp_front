@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:chatapp/pages/login.dart';
 import 'package:chatapp/pages/pininput.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 import 'pages/main_page.dart';
+import "package:hive_flutter/hive_flutter.dart";
 
-void main() {
+void main() async {
   runApp(const MyApp());
+  await Hive.initFlutter();
 }
 
 class MyApp extends StatelessWidget {
