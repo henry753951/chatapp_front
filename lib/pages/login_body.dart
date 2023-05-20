@@ -1,4 +1,3 @@
-
 import 'package:chatapp/pages/pininput.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,8 @@ import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import 'package:m_toast/m_toast.dart';
 
+import 'main_page.dart';
+
 class LoginBodyScreen extends StatefulWidget {
   const LoginBodyScreen({super.key});
 
@@ -17,7 +18,7 @@ class LoginBodyScreen extends StatefulWidget {
   State<LoginBodyScreen> createState() => _LoginBodyScreenState();
 }
 
-const BASEURL = "http://192.168.0.70:8080/auth/login";
+const BASEURL = "http://192.168.1.101:8080/auth/login";
 
 class _LoginBodyScreenState extends State<LoginBodyScreen> {
   final UserNameController = TextEditingController();
@@ -39,14 +40,26 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
         .post(BASEURL, data: {"username": username, "password": password});
     var data = response.data;
     if (data["msg"] == "成功登入") {
-      auth_box.put("token", data["data"]["token"]);
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => VerificationCodeScreen(),
-        ),
-        (Route<dynamic> route) => false,
-      );
+      // if verified
+      if (data["data"]["verified"]) {
+        auth_box.put("token", data["data"]["token"]);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainPage(),
+          ),
+          (Route<dynamic> route) => false,
+        );
+      } else {
+        auth_box.put("token", data["data"]["token"]);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VerificationCodeScreen(),
+          ),
+          (Route<dynamic> route) => false,
+        );
+      }
     } else {
       toast.errorToast(context,
           alignment: Alignment.topLeft, message: "帳號或密碼錯誤");
