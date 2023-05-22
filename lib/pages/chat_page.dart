@@ -44,6 +44,24 @@ class _ChatPageState extends State<ChatPage> {
           image: "images/userImage3.jpeg",
           time: "31 Mar",
           id: "5"),
+      invite(
+          text: "Jorge Henry",
+          secondaryText: "Hey where are you?",
+          image: "images/userImage3.jpeg",
+          time: "31 Mar",
+          id: "5"),
+      invite(
+          text: "Jorge Henry",
+          secondaryText: "Hey where are you?",
+          image: "images/userImage3.jpeg",
+          time: "31 Mar",
+          id: "5"),
+      invite(
+          text: "Jorge Henry",
+          secondaryText: "Hey where are you?",
+          image: "images/userImage3.jpeg",
+          time: "31 Mar",
+          id: "5"),
     ];
     ShowMToast toast = ShowMToast();
     DismissDirection _dismissDirection = DismissDirection.horizontal;
@@ -73,11 +91,11 @@ class _ChatPageState extends State<ChatPage> {
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(
+                    Expanded(
                       child: ListView.builder(
                         itemCount: Invite.length,
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
                           return Container(
                             padding: EdgeInsets.only(top: 10, bottom: 10),
@@ -322,6 +340,10 @@ class _ChatPageState extends State<ChatPage> {
               padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 8),
               child: CupertinoSearchTextField(
                   placeholder: "搜尋",
+                  placeholderStyle: TextStyle(
+                    fontSize: 14.0,
+                    fontFamily: 'Brutal',
+                  ),
                   borderRadius: BorderRadius.horizontal(
                       left: Radius.circular(50), right: Radius.circular(50)))),
           Expanded(

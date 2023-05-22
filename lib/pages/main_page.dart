@@ -64,7 +64,7 @@ class _MainPageState extends State<MainPage> {
         ),
         CustomNavigationBarItem(
           icon: Icon(CupertinoIcons.person_crop_circle_fill),
-          title: Text("個人檔案"),
+          title: const Text("個人檔案"),
         ),
       ],
       currentIndex: _currentIndex,

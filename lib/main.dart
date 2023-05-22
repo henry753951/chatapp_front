@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pinput/pinput.dart';
 
@@ -12,7 +13,12 @@ import "package:hive_flutter/hive_flutter.dart";
 
 void main() async {
   await Hive.initFlutter();
-  await dotenv.load(fileName: ".env");
+  if (kReleaseMode) {
+    await dotenv.load(fileName: ".env.production");
+  } else {
+    await dotenv.load(fileName: ".env");
+  }
+
   runApp(const MyApp());
 }
 
@@ -60,10 +66,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent, //top status bar
+        statusBarColor: Color.fromARGB(40, 0, 0, 0), //top status bar
         systemNavigationBarColor: Color.fromARGB(
             255, 255, 255, 255), // navigation bar color, the one Im looking for
-        statusBarIconBrightness: Brightness.dark, // status bar icons' color
+        statusBarIconBrightness: Brightness.light, // status bar icons' color
         systemNavigationBarIconBrightness:
             Brightness.dark, //navigation bar icons' color
       ),
