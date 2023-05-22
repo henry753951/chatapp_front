@@ -25,7 +25,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
     Dio dio = new Dio();
     dio.options.headers["authorization"] = "Bearer ${token}";
     Response response =
-        await dio.post("http://192.168.0.70:8080/auth/verify", data: code);
+        await dio.post("http://192.168.0.131:8080/auth/verify", data: code);
     print(response.data);
     if (response.data["msg"] == "驗證成功") {
       Navigator.pushAndRemoveUntil(

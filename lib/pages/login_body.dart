@@ -1,4 +1,3 @@
-
 import 'package:chatapp/pages/pininput.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +16,7 @@ class LoginBodyScreen extends StatefulWidget {
   State<LoginBodyScreen> createState() => _LoginBodyScreenState();
 }
 
-const BASEURL = "http://192.168.0.70:8080/auth/login";
+const BASEURL = "http://192.168.0.131:8080/auth/login";
 
 class _LoginBodyScreenState extends State<LoginBodyScreen> {
   final UserNameController = TextEditingController();
@@ -27,29 +26,45 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
   String username = "";
   String password = "";
 
-  void signUserIn() async {
-    var auth_box = await Hive.openBox('auth');
-    var token = auth_box.get("token");
-    print("data");
-    Dio dio = new Dio();
-    setState(() {
-      loading = true;
-    });
-    Response response = await dio
-        .post(BASEURL, data: {"username": username, "password": password});
-    var data = response.data;
-    if (data["msg"] == "成功登入") {
-      auth_box.put("token", data["data"]["token"]);
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => VerificationCodeScreen(),
-        ),
-        (Route<dynamic> route) => false,
+  BaseOptions options = BaseOptions(
+      receiveDataWhenStatusError: true,
+      connectTimeout: Duration(seconds: 10), // 60 seconds
+      receiveTimeout: Duration(seconds: 60) // 60 seconds
       );
-    } else {
+  void signUserIn() async {
+    try {
+      var authBox = await Hive.openBox('auth');
+
+      Dio dio = new Dio(options);
+      setState(() {
+        loading = true;
+      });
+      Response response = await dio
+          .post(BASEURL, data: {"username": username, "password": password});
+      var data = response.data;
+      if (data["msg"] == "成功登入") {
+        authBox.put("token", data["data"]["token"]);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VerificationCodeScreen(),
+          ),
+          (Route<dynamic> route) => true,
+        );
+      } else {
+        setState(() {
+          loading = false;
+        });
+        toast.errorToast(context,
+            alignment: Alignment.topLeft, message: "帳號或密碼錯誤");
+      }
+    } catch (e) {
+      print(e);
+      setState(() {
+        loading = false;
+      });
       toast.errorToast(context,
-          alignment: Alignment.topLeft, message: "帳號或密碼錯誤");
+          alignment: Alignment.topLeft, message: e.toString());
     }
   }
 

@@ -9,12 +9,34 @@ import 'pages/main_page.dart';
 import "package:hive_flutter/hive_flutter.dart";
 
 void main() async {
-  runApp(const MyApp());
   await Hive.initFlutter();
+  runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool logined = false;
+  void checkLogin() async {
+    var authBox = await Hive.openBox('auth');
+    var token = authBox.get("token");
+    if (token != null) {
+      setState(() {
+        logined = true;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkLogin();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +55,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         debugShowCheckedModeBanner: false,
-        home: LoginScreen(),
+        home: logined ? MainPage() : const LoginScreen(),
       ),
     );
   }
