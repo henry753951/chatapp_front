@@ -3,11 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
-import 'login.dart';
+import 'auth/login.dart';
 
-class ExamplePage extends StatefulWidget {
+class ProfilePage extends StatefulWidget {
   @override
-  _ExamplePageState createState() => _ExamplePageState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
 class User {
@@ -15,7 +15,7 @@ class User {
   String username = "";
 }
 
-class _ExamplePageState extends State<ExamplePage> {
+class _ProfilePageState extends State<ProfilePage> {
   User user = User();
   void getUser() async {
     var authBox = await Hive.openBox('auth');

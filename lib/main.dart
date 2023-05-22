@@ -3,8 +3,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pinput/pinput.dart';
 
 import 'modules/utils.dart';
-import 'package:chatapp/pages/login.dart';
-import 'package:chatapp/pages/pininput.dart';
+import 'package:chatapp/pages/auth/login.dart';
+import 'package:chatapp/pages/auth/pininput.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'pages/main_page.dart';
@@ -24,6 +24,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool loading = true;
   bool logined = false;
   bool active = false;
   void checkLogin() async {
@@ -43,6 +44,9 @@ class _MyAppState extends State<MyApp> {
         });
       }
     }
+    setState(() {
+      loading = false;
+    });
   }
 
   @override
@@ -66,12 +70,29 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.orange,
         ),
         debugShowCheckedModeBanner: false,
-        home: logined
-            ? (active ? MainPage() : const VerificationCodeScreen(resend: true))
-            : const LoginScreen(),
+        home: loading
+            ? Scaffold(
+                body: Center(
+                    child: Text("Tinder",
+                        style: TextStyle(
+                          fontSize: 58,
+                          fontWeight: FontWeight.bold,
+                          foreground: Paint()
+                            ..shader = const LinearGradient(
+                              colors: [Colors.red, Colors.orange],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ).createShader(Rect.fromLTWH(0, 0, 280, 80)),
+                        ))),
+              )
+            : (logined
+                ? (active
+                    ? MainPage()
+                    : const VerificationCodeScreen(resend: true))
+                : const LoginScreen()),
       ),
     );
   }

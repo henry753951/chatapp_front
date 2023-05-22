@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:chatapp/pages/login_body.dart';
+import 'package:chatapp/pages/auth/login_body.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

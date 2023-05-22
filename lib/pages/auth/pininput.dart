@@ -7,7 +7,7 @@ import 'package:m_toast/m_toast.dart';
 import 'package:pinput/pinput.dart';
 import 'dart:async';
 
-import 'main_page.dart';
+import '../main_page.dart';
 
 class VerificationCodeScreen extends StatefulWidget {
   final bool resend;

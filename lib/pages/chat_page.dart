@@ -1,5 +1,6 @@
 import 'package:chatapp/components/chat.dart';
 import 'package:chatapp/models/chat_users.dart';
+import 'package:chatapp/modules/dragbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -49,12 +50,14 @@ class _ChatPageState extends State<ChatPage> {
     showModalBottomSheet(
         isScrollControlled: true,
         context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25.0),
+        ),
         builder: (context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return Container(
               height: MediaQuery.of(context).size.height * 0.75,
-              color: Color(0xff737373),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -64,19 +67,7 @@ class _ChatPageState extends State<ChatPage> {
                 ),
                 child: Column(
                   children: <Widget>[
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Center(
-                      child: Container(
-                        height: 4,
-                        width: 50,
-                        color: Colors.grey.shade200,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    DragBar(),
                     Text(
                       "好友邀請",
                       style:

@@ -1,5 +1,5 @@
 import 'package:chatapp/modules/utils.dart';
-import 'package:chatapp/pages/pininput.dart';
+import 'package:chatapp/pages/auth/pininput.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -11,7 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import 'package:m_toast/m_toast.dart';
 
-import 'main_page.dart';
+import '../main_page.dart';
 
 class LoginBodyScreen extends StatefulWidget {
   const LoginBodyScreen({super.key});
