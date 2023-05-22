@@ -1,12 +1,38 @@
+import 'package:chatapp/pages/main_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+
+import 'login.dart';
 
 class ExamplePage extends StatefulWidget {
   @override
   _ExamplePageState createState() => _ExamplePageState();
 }
 
+class User {
+  String name = "";
+  String username = "";
+}
+
 class _ExamplePageState extends State<ExamplePage> {
+  User user = User();
+  void getUser() async {
+    var authBox = await Hive.openBox('auth');
+    try {
+      user.name = authBox.get("user")["Name"];
+      user.username = authBox.get("user")["username"];
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -55,7 +81,7 @@ class _ExamplePageState extends State<ExamplePage> {
               const SizedBox(
                 height: 10,
               ),
-              Text("冬秉翰",
+              Text(user.name,
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -67,7 +93,7 @@ class _ExamplePageState extends State<ExamplePage> {
               info(
                 icon: Icon(CupertinoIcons.creditcard, color: Colors.orange),
                 title: "學號",
-                value: "A1105506",
+                value: user.username,
               ),
               info(
                 icon: Icon(Icons.cake_outlined, color: Colors.orange),
@@ -83,7 +109,6 @@ class _ExamplePageState extends State<ExamplePage> {
           ),
         ),
         const Spacer(),
-        
         LogoutBtn(),
         const SizedBox(
           height: 35,
@@ -112,7 +137,17 @@ class LogoutBtn extends StatelessWidget {
           )),
       child: Center(
         child: TextButton(
-          onPressed: () {},
+          onPressed: () {
+            Hive.box('auth').delete("token");
+            Hive.box('auth').delete("user");
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const LoginScreen(),
+              ),
+              (Route<dynamic> route) => false,
+            );
+          },
           child: Text(
             "登出",
             style: TextStyle(

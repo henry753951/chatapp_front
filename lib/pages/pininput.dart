@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:m_toast/m_toast.dart';
@@ -9,7 +10,9 @@ import 'dart:async';
 import 'main_page.dart';
 
 class VerificationCodeScreen extends StatefulWidget {
-  const VerificationCodeScreen({Key? key}) : super(key: key);
+  final bool resend;
+  const VerificationCodeScreen({Key? key, required this.resend})
+      : super(key: key);
 
   @override
   State<VerificationCodeScreen> createState() => _VerificationCodeScreenState();
@@ -25,9 +28,10 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
     Dio dio = new Dio();
     dio.options.headers["authorization"] = "Bearer ${token}";
     Response response =
-        await dio.post("http://192.168.0.131:8080/auth/verify", data: code);
+        await dio.post("${dotenv.get("baseUrl")}auth/verify", data: code);
     print(response.data);
     if (response.data["msg"] == "驗證成功") {
+      auth_box.put("token", response.data["data"]);
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
@@ -38,18 +42,21 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
     } else {
       toast.errorToast(context,
           alignment: Alignment.topLeft, message: response.data["msg"]);
-      auth_box.put("token", response.data["data"]);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      resentButtonDisabled = !widget.resend;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-
-    @override
-    void initState() {}
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -167,7 +174,14 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        onPressed: () {
+                        onPressed: () async {
+                          var auth_box = await Hive.openBox('auth');
+                          var token = auth_box.get("token");
+                          Dio dio = new Dio();
+                          dio.options.headers["authorization"] =
+                              "Bearer ${token}";
+                          Response response = await dio.post(
+                              "${dotenv.get("baseUrl")}auth/verify/resend");
                           setState(() {
                             resentButtonDisabled = true;
                           });

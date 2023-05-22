@@ -1,15 +1,18 @@
 import 'dart:io';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:pinput/pinput.dart';
 
+import 'modules/utils.dart';
 import 'package:chatapp/pages/login.dart';
 import 'package:chatapp/pages/pininput.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
 import 'pages/main_page.dart';
 import "package:hive_flutter/hive_flutter.dart";
 
 void main() async {
   await Hive.initFlutter();
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
@@ -22,20 +25,31 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool logined = false;
+  bool active = false;
   void checkLogin() async {
     var authBox = await Hive.openBox('auth');
     var token = authBox.get("token");
     if (token != null) {
-      setState(() {
-        logined = true;
-      });
+      var payload = parseJwt(token);
+      active = payload["active"];
+      var exp = payload["exp"];
+      var now = DateTime.now().millisecondsSinceEpoch / 1000;
+      if (exp < now) {
+        authBox.delete("token");
+      } else {
+        setState(() {
+          logined = true;
+          if (active) active = true;
+        });
+      }
     }
   }
 
   @override
   void initState() {
-    super.initState();
+    print(dotenv.env.toString());
     checkLogin();
+    super.initState();
   }
 
   @override
@@ -55,7 +69,9 @@ class _MyAppState extends State<MyApp> {
           primarySwatch: Colors.blue,
         ),
         debugShowCheckedModeBanner: false,
-        home: logined ? MainPage() : const LoginScreen(),
+        home: logined
+            ? (active ? MainPage() : const VerificationCodeScreen(resend: true))
+            : const LoginScreen(),
       ),
     );
   }

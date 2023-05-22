@@ -1,6 +1,8 @@
+import 'package:chatapp/modules/utils.dart';
 import 'package:chatapp/pages/pininput.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:chatapp/components/my_button.dart';
@@ -17,8 +19,6 @@ class LoginBodyScreen extends StatefulWidget {
   @override
   State<LoginBodyScreen> createState() => _LoginBodyScreenState();
 }
-
-const BASEURL = "http://192.168.0.131:8080/auth/login";
 
 class _LoginBodyScreenState extends State<LoginBodyScreen> {
   final UserNameController = TextEditingController();
@@ -41,15 +41,26 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
       setState(() {
         loading = true;
       });
-      Response response = await dio
-          .post(BASEURL, data: {"username": username, "password": password});
+      Response response = await dio.post("${dotenv.get("baseUrl")}auth/login",
+          data: {"username": username, "password": password});
       var data = response.data;
       if (data["msg"] == "成功登入") {
         authBox.put("token", data["data"]["token"]);
+        authBox.put("user", data["data"]["user"]);
+        if (parseJwt(data["data"]["token"])["active"]) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainPage(),
+            ),
+            (Route<dynamic> route) => false,
+          );
+          return;
+        }
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => VerificationCodeScreen(),
+            builder: (context) => VerificationCodeScreen(resend: false),
           ),
           (Route<dynamic> route) => false,
         );
