@@ -9,6 +9,8 @@ import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import 'package:m_toast/m_toast.dart';
 
+import 'main_page.dart';
+
 class LoginBodyScreen extends StatefulWidget {
   const LoginBodyScreen({super.key});
 
@@ -49,7 +51,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
           MaterialPageRoute(
             builder: (context) => VerificationCodeScreen(),
           ),
-          (Route<dynamic> route) => true,
+          (Route<dynamic> route) => false,
         );
       } else {
         setState(() {
