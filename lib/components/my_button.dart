@@ -5,13 +5,16 @@ import 'package:hexcolor/hexcolor.dart';
 class MyButton extends StatelessWidget {
   final Function()? onPressed;
   final String buttonText;
+  final bool enabled;
   const MyButton(
-      {super.key, required this.onPressed, required this.buttonText});
+      {super.key, required this.onPressed, required this.buttonText,required this.enabled});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPressed,
+      onTap: () {
+        if (enabled) onPressed!();
+      },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
         child: Container(
@@ -19,7 +22,7 @@ class MyButton extends StatelessWidget {
           height: 55,
           width: 275,
           decoration: BoxDecoration(
-            color: HexColor('#00000'),
+            color: HexColor(enabled ? '#00000' : '#8d8d8d'),
             borderRadius: BorderRadius.circular(30),
           ),
           child: Text(

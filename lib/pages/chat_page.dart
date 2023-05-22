@@ -1,7 +1,10 @@
 import 'package:chatapp/components/chat.dart';
 import 'package:chatapp/models/chat_users.dart';
+import 'package:chatapp/modules/dragbar.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:m_toast/m_toast.dart';
 
 class ChatPage extends StatefulWidget {
   @override
@@ -41,16 +44,38 @@ class _ChatPageState extends State<ChatPage> {
           image: "images/userImage3.jpeg",
           time: "31 Mar",
           id: "5"),
+      invite(
+          text: "Jorge Henry",
+          secondaryText: "Hey where are you?",
+          image: "images/userImage3.jpeg",
+          time: "31 Mar",
+          id: "5"),
+      invite(
+          text: "Jorge Henry",
+          secondaryText: "Hey where are you?",
+          image: "images/userImage3.jpeg",
+          time: "31 Mar",
+          id: "5"),
+      invite(
+          text: "Jorge Henry",
+          secondaryText: "Hey where are you?",
+          image: "images/userImage3.jpeg",
+          time: "31 Mar",
+          id: "5"),
     ];
+    ShowMToast toast = ShowMToast();
+    DismissDirection _dismissDirection = DismissDirection.horizontal;
     showModalBottomSheet(
         isScrollControlled: true,
         context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25.0),
+        ),
         builder: (context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return Container(
               height: MediaQuery.of(context).size.height * 0.75,
-              color: Color(0xff737373),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -60,47 +85,58 @@ class _ChatPageState extends State<ChatPage> {
                 ),
                 child: Column(
                   children: <Widget>[
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Center(
-                      child: Container(
-                        height: 4,
-                        width: 50,
-                        color: Colors.grey.shade200,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    DragBar(),
                     Text(
                       "好友邀請",
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(
+                    Expanded(
                       child: ListView.builder(
                         itemCount: Invite.length,
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
                           return Container(
                             padding: EdgeInsets.only(top: 10, bottom: 10),
                             child: Dismissible(
+                              direction: _dismissDirection,
                               onDismissed: (direction) {
-                                // Remove the item from the data source.
-                                setState(() {
+                                if (direction == DismissDirection.endToStart) {
                                   Invite.removeAt(index);
-                                });
+                                  setState(() {});
+                                  toast.successToast(context,
+                                      alignment: Alignment.topCenter,
+                                      message: "已刪除好友邀請");
+                                } else {
+                                  Invite.removeAt(index);
+                                  setState(() {});
+                                  toast.successToast(context,
+                                      alignment: Alignment.topCenter,
+                                      message: "已接受好友邀請");
+                                }
                               },
-                              background: Container(
+                              dragStartBehavior: DragStartBehavior.down,
+                              background: const ColoredBox(
+                                color: Color.fromARGB(255, 93, 196, 136),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(16.0),
+                                    child:
+                                        Icon(Icons.check, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                              secondaryBackground: const ColoredBox(
                                 color: Colors.red,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 15),
-                                alignment: Alignment.centerRight,
-                                child: const Icon(
-                                  Icons.delete,
-                                  color: Colors.white,
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(16.0),
+                                    child:
+                                        Icon(Icons.delete, color: Colors.white),
+                                  ),
                                 ),
                               ),
                               key: UniqueKey(),
@@ -116,13 +152,31 @@ class _ChatPageState extends State<ChatPage> {
                                             AssetImage(Invite[index].image),
                                       )),
                                   title: Text(Invite[index].text),
-                                  subtitle: Text(Invite[index].secondaryText),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
+                                  subtitle: Row(
                                     children: [
+                                      Text(Invite[index].secondaryText),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      const Text('-'),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
                                       Text(Invite[index].time),
-                                      Icon(Icons.check_circle),
                                     ],
+                                  ),
+                                  trailing: Padding(
+                                    padding: const EdgeInsets.only(right: 15),
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          toast.successToast(context,
+                                              alignment: Alignment.topCenter,
+                                              message: "已接受好友邀請");
+                                          setState(() {
+                                            Invite.removeAt(index);
+                                          });
+                                        },
+                                        child: Icon(Icons.check)),
                                   )),
                             ),
                           );
@@ -212,46 +266,71 @@ class _ChatPageState extends State<ChatPage> {
                             end: Alignment.centerRight,
                           ).createShader(Rect.fromLTWH(0, 0, 80, 70)),
                       )),
-                  Container(
-                    padding: const EdgeInsets.only(
-                        left: 8, right: 8, top: 2, bottom: 2),
-                    height: 30,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.orange[50],
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        SizedBox(
-                          width: 5,
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(
+                            left: 8, right: 8, top: 2, bottom: 2),
+                        height: 30,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.orange[50],
                         ),
-                        Icon(
-                          Icons.mail_outline_rounded,
-                          color: Color.fromARGB(255, 255, 176, 57),
-                          size: 20,
+                        child: Row(
+                          children: <Widget>[
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.mail_outline_rounded,
+                              color: Color.fromARGB(255, 255, 176, 57),
+                              size: 20,
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  showModal();
+                                });
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(right: 8),
+                                child: Text(
+                                  "好友邀請",
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color.fromARGB(255, 224, 171, 91)),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              showModal();
-                            });
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 8),
+                      ),
+                      Positioned(
+                        left: -3,
+                        top: -5,
+                        child: Container(
+                          height: 20,
+                          width: 20,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(25)),
+                          child: Center(
                             child: Text(
-                              "好友邀請",
+                              "2",
                               style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.bold,
-                                  color: Color.fromARGB(255, 224, 171, 91)),
+                                  color: Colors.white),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      )
+                    ],
                   )
                 ],
               ),
@@ -261,6 +340,10 @@ class _ChatPageState extends State<ChatPage> {
               padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 8),
               child: CupertinoSearchTextField(
                   placeholder: "搜尋",
+                  placeholderStyle: TextStyle(
+                    fontSize: 14.0,
+                    fontFamily: 'Brutal',
+                  ),
                   borderRadius: BorderRadius.horizontal(
                       left: Radius.circular(50), right: Radius.circular(50)))),
           Expanded(

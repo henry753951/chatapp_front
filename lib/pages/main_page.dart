@@ -1,9 +1,10 @@
-import 'package:chatapp/modules/Example_page.dart';
+import 'package:chatapp/pages/profile_page.dart';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'chat_page.dart';
+import 'friends_page.dart';
 
 class MainPage extends StatefulWidget{  
   @override
@@ -36,7 +37,7 @@ class _MainPageState extends State<MainPage> {
                   _currentIndex = page;
                 });
               },
-              children: [ChatPage(),ExamplePage()],
+              children: [ChatPage(),FriendPage(),ProfilePage()],
             ),
           ),
         ),
@@ -58,8 +59,12 @@ class _MainPageState extends State<MainPage> {
           title: Text("訊息"),
         ),
         CustomNavigationBarItem(
+          icon: Icon(CupertinoIcons.person_2_fill),
+          title: Text("好友"),
+        ),
+        CustomNavigationBarItem(
           icon: Icon(CupertinoIcons.person_crop_circle_fill),
-          title: Text("個人檔案"),
+          title: const Text("個人檔案"),
         ),
       ],
       currentIndex: _currentIndex,

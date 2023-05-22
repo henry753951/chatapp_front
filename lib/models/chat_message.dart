@@ -1,4 +1,4 @@
-import 'package:chatapp/modules/chat_detail_page.dart';
+import 'package:chatapp/pages/chat/chat_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 
 class ChatMessage{

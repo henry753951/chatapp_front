@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 
-class MyTextField extends StatelessWidget {
+class MyTextField extends StatefulWidget {
   final controller;
   final String hintText;
   final bool obscureText;
+
+  final void Function(String) onchanged;
 
   const MyTextField({
     super.key,
     required this.controller,
     required this.hintText,
     required this.obscureText,
+    required this.onchanged,
   });
 
+  @override
+  _MyTextFieldState createState() => _MyTextFieldState();
+}
+
+class _MyTextFieldState extends State<MyTextField> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,13 +29,14 @@ class MyTextField extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: TextField(
-          controller: controller,
-          obscureText: obscureText,
+          onChanged: widget.onchanged,
+          controller: widget.controller,
+          obscureText: widget.obscureText,
           // transparent all
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.transparent,
-            hintText: hintText,
+            hintText: widget.hintText,
             hintStyle: const TextStyle(
               color: Colors.grey,
               fontSize: 14,

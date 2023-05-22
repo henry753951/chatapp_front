@@ -20,6 +20,12 @@ dependencies:
   get: ^4.6.5
   google_fonts: ^4.0.4
   hexcolor: ^3.0.1
+  pinput: ^2.2.31
+  m_toast: ^0.2.0
+  hive_flutter: ^1.1.0
+  flutter_dotenv: ^5.0.2
+  backdrop_modal_route: ^2.0.2
+  transition: ^2.0.2
 
 dev_dependencies:
   flutter_test:
@@ -40,6 +46,9 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - lib/images/
+    - .env
+    - .env.production
+    
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

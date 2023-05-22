@@ -1,16 +1,38 @@
-import 'package:chatapp/components/chat_bubble.dart';
-import 'package:chatapp/components/chat_detail_page_appbar.dart';
-import 'package:chatapp/models/chat_message.dart';
-import 'package:chatapp/models/send_menu_items.dart';
+import 'package:chatapp/pages/main_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
-class ExamplePage extends StatefulWidget {
+import 'auth/login.dart';
+
+class ProfilePage extends StatefulWidget {
   @override
-  _ExamplePageState createState() => _ExamplePageState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ExamplePageState extends State<ExamplePage> {
+class User {
+  String name = "";
+  String username = "";
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  User user = User();
+  void getUser() async {
+    var authBox = await Hive.openBox('auth');
+    try {
+      user.name = authBox.get("user")["Name"];
+      user.username = authBox.get("user")["username"];
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -56,32 +78,39 @@ class _ExamplePageState extends State<ExamplePage> {
                   ),
                 )
               ]),
-              info(
-                icon: Icon(CupertinoIcons.brightness, color: Colors.orange),
-                title: "性命",
-                value: "姓名",
+              const SizedBox(
+                height: 10,
+              ),
+              Text(user.name,
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 75, 75, 75),
+                  )),
+              const SizedBox(
+                height: 35,
               ),
               info(
-                icon: Icon(Icons.check_circle),
-                title: "沒有",
-                value: "mail",
+                icon: Icon(CupertinoIcons.creditcard, color: Colors.orange),
+                title: "學號",
+                value: user.username,
               ),
               info(
-                icon: Icon(Icons.check_circle),
-                title: "birthday",
-                value: "birthday",
+                icon: Icon(Icons.cake_outlined, color: Colors.orange),
+                title: "生日",
+                value: "07/14",
               ),
               info(
-                icon: Icon(Icons.check_circle),
-                title: "phone",
-                value: "phone",
+                icon: Icon(CupertinoIcons.phone, color: Colors.orange),
+                title: "手機號碼",
+                value: "0965494854",
               ),
             ],
           ),
         ),
-        Spacer(),
+        const Spacer(),
         LogoutBtn(),
-        SizedBox(
+        const SizedBox(
           height: 35,
         ),
       ],
@@ -108,7 +137,17 @@ class LogoutBtn extends StatelessWidget {
           )),
       child: Center(
         child: TextButton(
-          onPressed: () {},
+          onPressed: () {
+            Hive.box('auth').delete("token");
+            Hive.box('auth').delete("user");
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const LoginScreen(),
+              ),
+              (Route<dynamic> route) => false,
+            );
+          },
           child: Text(
             "登出",
             style: TextStyle(
