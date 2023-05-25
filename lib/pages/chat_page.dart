@@ -95,7 +95,7 @@ class _ChatPageState extends State<ChatPage> {
                             colors: [Colors.red, Colors.orange],
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
-                          ).createShader(Rect.fromLTWH(0, 0, 80, 70)),
+                          ).createShader(const Rect.fromLTWH(0.0, 0.0, 80.0, 70.0)),
                       )),
                   Stack(
                     clipBehavior: Clip.none,

@@ -51,7 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             colors: [Colors.red, Colors.orange],
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
-                          ).createShader(Rect.fromLTWH(0, 0, 80, 70)),
+                          ).createShader(const Rect.fromLTWH(0.0, 0.0, 80.0, 70.0)),
                       )),
                 ],
               ),
