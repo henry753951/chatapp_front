@@ -45,8 +45,8 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
           data: {"username": username, "password": password});
       var data = response.data;
       if (data["msg"] == "成功登入") {
-        authBox.put("token", data["data"]["token"]);
-        authBox.put("user", data["data"]["user"]);
+        await authBox.put("token", data["data"]["token"]);
+        await authBox.put("user", data["data"]["user"]);
         if (parseJwt(data["data"]["token"])["active"]) {
           Navigator.pushAndRemoveUntil(
             context,
