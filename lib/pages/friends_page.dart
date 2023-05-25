@@ -25,8 +25,7 @@ class User {
       required this.avatar,
       required this.online,
       required this.lastSeen,
-      required this.friends
-      });
+      required this.friends});
 }
 
 class FriendPage extends StatefulWidget {
@@ -35,7 +34,6 @@ class FriendPage extends StatefulWidget {
 }
 
 class _FriendPageState extends State<FriendPage> {
-
   @override
   void initState() {
     super.initState();
@@ -107,8 +105,7 @@ class _FriendPageState extends State<FriendPage> {
             avatar: "https://i.imgur.com/3x5q2Yk.jpg",
             online: true,
             lastSeen: 0,
-            friends: []
-            ),
+            friends: []),
       );
     }
     // Add list
