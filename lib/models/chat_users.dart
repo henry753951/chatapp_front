@@ -14,13 +14,11 @@ class ChatUsers {
 
 class invite {
   String text;
-  String secondaryText;
   String image;
-  String time;
+  DateTime time;
   String id;
   invite(
       {required this.text,
-      required this.secondaryText,
       required this.image,
       required this.time,
       required this.id});

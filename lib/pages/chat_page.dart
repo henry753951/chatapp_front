@@ -1,10 +1,14 @@
 import 'package:chatapp/components/chat.dart';
 import 'package:chatapp/models/chat_users.dart';
 import 'package:chatapp/modules/dragbar.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive/hive.dart';
 import 'package:m_toast/m_toast.dart';
+import 'package:intl/intl.dart'; // for date format
 
 class ChatPage extends StatefulWidget {
   @override
@@ -12,56 +16,39 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  void showModal() {
+  Future<void> accept(String sender_id) async {
+    var auth_box = await Hive.openBox('auth');
+    var token = auth_box.get("token");
+    Dio dio = new Dio();
+    dio.options.headers["authorization"] = "Bearer ${token}";
+    Response response = await dio.post("${dotenv.get("baseUrl")}invite/invite",
+        data: sender_id);
+  }
+
+  Future<void> delete(String sender_id) async {
+    var auth_box = await Hive.openBox('auth');
+    var token = auth_box.get("token");
+    Dio dio = new Dio();
+    dio.options.headers["authorization"] = "Bearer ${token}";
+    Response response = await dio
+        .delete("${dotenv.get("baseUrl")}invite/invite", data: sender_id);
+  }
+
+  Future<void> showModal() async {
+    var auth_box = await Hive.openBox('auth');
+    var token = auth_box.get("token");
+    Dio dio = new Dio();
+    dio.options.headers["authorization"] = "Bearer ${token}";
+    Response response = await dio.get("${dotenv.get("baseUrl")}invite/invite");
+    var data = response.data;
+    print(data);
     List<invite> Invite = [
-      invite(
-          text: "Jane Russel",
-          secondaryText: "Awesome Setup",
-          image: "images/userImage1.jpeg",
-          time: "Now",
-          id: "1"),
-      invite(
-          text: "Jane Russel",
-          secondaryText: "Awesome Setup",
-          image: "images/userImage1.jpeg",
-          time: "Now",
-          id: "2"),
-      invite(
-          text: "Jane Russel",
-          secondaryText: "Awesome Setup",
-          image: "images/userImage1.jpeg",
-          time: "Now",
-          id: "3"),
-      invite(
-          text: "Glady's Murphy",
-          secondaryText: "That's Great",
-          image: "images/userImage2.jpeg",
-          time: "Yesterday",
-          id: "4"),
-      invite(
-          text: "Jorge Henry",
-          secondaryText: "Hey where are you?",
-          image: "images/userImage3.jpeg",
-          time: "31 Mar",
-          id: "5"),
-      invite(
-          text: "Jorge Henry",
-          secondaryText: "Hey where are you?",
-          image: "images/userImage3.jpeg",
-          time: "31 Mar",
-          id: "5"),
-      invite(
-          text: "Jorge Henry",
-          secondaryText: "Hey where are you?",
-          image: "images/userImage3.jpeg",
-          time: "31 Mar",
-          id: "5"),
-      invite(
-          text: "Jorge Henry",
-          secondaryText: "Hey where are you?",
-          image: "images/userImage3.jpeg",
-          time: "31 Mar",
-          id: "5"),
+      for (var i in data["data"])
+        invite(
+            text: i["sender"]["username"], //?
+            image: "https://i.imgur.com/3x5q2Yk.jpg",
+            time: DateTime.fromMillisecondsSinceEpoch(i["time"]), //?
+            id: i["sender"]["id"])
     ];
     ShowMToast toast = ShowMToast();
     DismissDirection _dismissDirection = DismissDirection.horizontal;
@@ -103,12 +90,14 @@ class _ChatPageState extends State<ChatPage> {
                               direction: _dismissDirection,
                               onDismissed: (direction) {
                                 if (direction == DismissDirection.endToStart) {
+                                  delete(Invite[index].id);
                                   Invite.removeAt(index);
                                   setState(() {});
                                   toast.successToast(context,
                                       alignment: Alignment.topCenter,
                                       message: "已刪除好友邀請");
                                 } else {
+                                  accept(Invite[index].id);
                                   Invite.removeAt(index);
                                   setState(() {});
                                   toast.successToast(context,
@@ -154,21 +143,23 @@ class _ChatPageState extends State<ChatPage> {
                                   title: Text(Invite[index].text),
                                   subtitle: Row(
                                     children: [
-                                      Text(Invite[index].secondaryText),
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      const Text('-'),
+                                      const Text('-傳送時間:'),
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      Text(Invite[index].time),
+                                      Text(DateFormat('yyyy-MM-dd hh:mm:ss')
+                                          .format(
+                                              Invite[index].time.toLocal())),
                                     ],
                                   ),
                                   trailing: Padding(
                                     padding: const EdgeInsets.only(right: 15),
                                     child: GestureDetector(
                                         onTap: () {
+                                          accept(Invite[index].id);
                                           toast.successToast(context,
                                               alignment: Alignment.topCenter,
                                               message: "已接受好友邀請");
