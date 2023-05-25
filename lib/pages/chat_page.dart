@@ -45,7 +45,7 @@ class _ChatPageState extends State<ChatPage> {
     List<invite> Invite = [
       for (var i in data["data"])
         invite(
-            text: i["sender"]["Name"], //?
+            text: i["sender"]['user']["Name"], //?
             image: "https://i.imgur.com/3x5q2Yk.jpg",
             time: DateTime.fromMillisecondsSinceEpoch(i["time"]), //?
             id: i["sender"]["id"])
