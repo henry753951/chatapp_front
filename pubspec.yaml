@@ -26,6 +26,8 @@ dependencies:
   flutter_dotenv: ^5.0.2
   backdrop_modal_route: ^2.0.2
   transition: ^2.0.2
+  intl: ^0.18.1
+  pull_to_refresh: ^2.0.0
 
 dev_dependencies:
   flutter_test:

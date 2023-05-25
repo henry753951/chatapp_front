@@ -33,6 +33,7 @@ class _MyAppState extends State<MyApp> {
   bool loading = true;
   bool logined = false;
   bool active = false;
+  String email = "";
   void checkLogin() async {
     var authBox = await Hive.openBox('auth');
     var token = authBox.get("token");
@@ -46,6 +47,7 @@ class _MyAppState extends State<MyApp> {
       } else {
         setState(() {
           logined = true;
+          email = authBox.get("user")['email'];
           if (active) active = true;
         });
       }
@@ -97,7 +99,7 @@ class _MyAppState extends State<MyApp> {
             : (logined
                 ? (active
                     ? MainPage()
-                    : const VerificationCodeScreen(resend: true))
+                    : VerificationCodeScreen(resend: true,email: email))
                 : const LoginScreen()),
       ),
     );

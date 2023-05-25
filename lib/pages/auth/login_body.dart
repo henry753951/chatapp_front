@@ -45,8 +45,8 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
           data: {"username": username, "password": password});
       var data = response.data;
       if (data["msg"] == "成功登入") {
-        authBox.put("token", data["data"]["token"]);
-        authBox.put("user", data["data"]["user"]);
+        await authBox.put("token", data["data"]["token"]);
+        await authBox.put("user", data["data"]["user"]);
         if (parseJwt(data["data"]["token"])["active"]) {
           Navigator.pushAndRemoveUntil(
             context,
@@ -60,7 +60,7 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => VerificationCodeScreen(resend: false),
+            builder: (context) => VerificationCodeScreen(resend: false, email: authBox.get("user")['email'],),
           ),
           (Route<dynamic> route) => false,
         );
@@ -111,11 +111,11 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: HexColor("#fed8c3"),
-        body: Column(
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: HexColor("#fed8c3"),
+      body: SafeArea(
+        child: Column(
           children: [
             Expanded(
               child: Center(

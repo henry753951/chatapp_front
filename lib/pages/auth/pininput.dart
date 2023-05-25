@@ -11,7 +11,8 @@ import '../main_page.dart';
 
 class VerificationCodeScreen extends StatefulWidget {
   final bool resend;
-  const VerificationCodeScreen({Key? key, required this.resend})
+  final String email;
+  const VerificationCodeScreen({Key? key, required this.resend, required this.email})
       : super(key: key);
 
   @override
@@ -93,7 +94,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                       ),
                     ),
                     TextSpan(
-                      text: 'a1105534@mail.nuk.edu.tw',
+                      text: widget.email,
                       style: TextStyle(
                         fontSize: 14.0,
                         color: Colors.orange,

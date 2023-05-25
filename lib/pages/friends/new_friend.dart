@@ -1,8 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:m_toast/m_toast.dart';
 
 class AddFriendPage extends StatefulWidget {
   @override
@@ -10,6 +13,28 @@ class AddFriendPage extends StatefulWidget {
 }
 
 class _AddFriendPageState extends State<AddFriendPage> {
+  String username = "";
+  final ShowMToast toast = ShowMToast();
+  void submit() async {
+    Dio dio = new Dio();
+    var auth_box = await Hive.openBox('auth');
+    var token = auth_box.get("token");
+    dio.options.headers["authorization"] = "Bearer ${token}";
+    Response response =
+        await dio.put("${dotenv.get("baseUrl")}invite/invite", data: username);
+    print(response.data);
+    if (response.data["msg"] == "成功!") {
+      print("QQ");
+      await toast.successToast(context,
+          alignment: Alignment.topLeft, message: "成功送出邀請");
+      Navigator.pop(context);
+    } else {
+      toast.errorToast(context,
+          alignment: Alignment.topLeft, message: response.data["errorMessage"]);
+
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -56,16 +81,20 @@ class _AddFriendPageState extends State<AddFriendPage> {
                         Container(
                           width: 300,
                           child: CupertinoTextField(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            placeholder: "輸入好友的學號",
-                            placeholderStyle:
-                                TextStyle(color: Colors.grey, fontSize: 14),
-                          ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              placeholder: "輸入好友的學號",
+                              placeholderStyle:
+                                  TextStyle(color: Colors.grey, fontSize: 14),
+                              onChanged: (value) {
+                                setState(() {
+                                  username = value;
+                                });
+                              }),
                         ),
                         SizedBox(height: 15),
                         Container(
@@ -86,7 +115,9 @@ class _AddFriendPageState extends State<AddFriendPage> {
                             child: Text("新增好友",
                                 style: GoogleFonts.notoSans(
                                     fontSize: 15, color: Colors.white)),
-                            onPressed: () {},
+                            onPressed: () {
+                              submit();
+                            },
                           ),
                         ),
                         Padding(

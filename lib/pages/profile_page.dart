@@ -19,18 +19,16 @@ class _ProfilePageState extends State<ProfilePage> {
   User user = User();
   void getUser() async {
     var authBox = await Hive.openBox('auth');
-    try {
+    setState(() {
       user.name = authBox.get("user")["Name"];
       user.username = authBox.get("user")["username"];
-    } catch (e) {
-      print(e);
-    }
+    });
   }
 
   @override
   void initState() {
-    super.initState();
     getUser();
+    super.initState();
   }
 
   @override
