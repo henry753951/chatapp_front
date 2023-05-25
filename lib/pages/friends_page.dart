@@ -107,7 +107,7 @@ class _FriendPageState extends State<FriendPage> {
             avatar: "https://i.imgur.com/3x5q2Yk.jpg",
             online: true,
             lastSeen: 0,
-            friends: 
+            friends: []
             ),
       );
     }
