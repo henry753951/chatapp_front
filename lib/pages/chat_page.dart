@@ -45,7 +45,7 @@ class _ChatPageState extends State<ChatPage> {
     List<invite> Invite = [
       for (var i in data["data"])
         invite(
-            text: i["sender"]["username"], //?
+            text: i["sender"]["Name"], //?
             image: "https://i.imgur.com/3x5q2Yk.jpg",
             time: DateTime.fromMillisecondsSinceEpoch(i["time"]), //?
             id: i["sender"]["id"])
@@ -143,13 +143,6 @@ class _ChatPageState extends State<ChatPage> {
                                   title: Text(Invite[index].text),
                                   subtitle: Row(
                                     children: [
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      const Text('-傳送時間:'),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
                                       Text(DateFormat('yyyy-MM-dd hh:mm:ss')
                                           .format(
                                               Invite[index].time.toLocal())),
