@@ -22,13 +22,16 @@ class _AddFriendPageState extends State<AddFriendPage> {
     dio.options.headers["authorization"] = "Bearer ${token}";
     Response response =
         await dio.put("${dotenv.get("baseUrl")}invite/invite", data: username);
+    print(response.data);
     if (response.data["msg"] == "成功!") {
-      toast.successToast(context,
-          alignment: Alignment.topLeft, message: "已送出邀請!");
+      print("QQ");
+      await toast.successToast(context,
+          alignment: Alignment.topLeft, message: "成功送出邀請");
       Navigator.pop(context);
     } else {
       toast.errorToast(context,
-          alignment: Alignment.topLeft, message: response.data["msg"]);
+          alignment: Alignment.topLeft, message: response.data["errorMessage"]);
+
     }
   }
 
