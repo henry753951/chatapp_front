@@ -17,13 +17,16 @@ class User {
   bool online = false;
   int lastSeen;
   String department = "";
+  List<User> friends;
   User(
       {required this.name,
       required this.username,
       required this.email,
       required this.avatar,
       required this.online,
-      required this.lastSeen});
+      required this.lastSeen,
+      required this.friends
+      });
 }
 
 class FriendPage extends StatefulWidget {
@@ -103,7 +106,9 @@ class _FriendPageState extends State<FriendPage> {
             email: "",
             avatar: "https://i.imgur.com/3x5q2Yk.jpg",
             online: true,
-            lastSeen: 0),
+            lastSeen: 0,
+            friends: 
+            ),
       );
     }
     // Add list
