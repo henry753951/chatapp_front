@@ -34,27 +34,9 @@ class _ChatUsersListState extends State<ChatUsersList> {
             Expanded(
               child: Row(
                 children: <Widget>[
-                  Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: 35.0,
-                        backgroundColor: Color.fromARGB(255, 226, 235, 113),
-                      ),
-                      Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                          height: 20,
-                          width: 20,
-                          decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 67, 190, 72),
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                  color: Colors.white,
-                                  width: 3.0)),
-                        ),
-                      )
-                    ],
+                  Avata(
+                    image: widget.image,
+                    isOnline: true,
                   ),
                   SizedBox(
                     width: 16,
@@ -65,9 +47,7 @@ class _ChatUsersListState extends State<ChatUsersList> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(widget.text,
-                              style: TextStyle(
-                                  fontSize: 18)),
+                          Text(widget.text, style: TextStyle(fontSize: 18)),
                           SizedBox(
                             height: 6,
                           ),
@@ -94,6 +74,50 @@ class _ChatUsersListState extends State<ChatUsersList> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class Avata extends StatelessWidget {
+  final String image;
+  final bool isOnline;
+  final Color color;
+  final double radius;
+  final double dotWidth;
+  const Avata({
+    super.key,
+    required this.image,
+    required this.isOnline,
+    this.color = const Color.fromARGB(255, 226, 235, 113),
+    this.radius = 35.0,
+    this.dotWidth = 20.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        CircleAvatar(
+          backgroundImage: NetworkImage(image),
+          radius: radius,
+          backgroundColor: color,
+        ),
+        Visibility(
+          visible: isOnline,
+          child: Positioned(
+            right: 0,
+            bottom: 0,
+            child: Container(
+              height: dotWidth,
+              width: dotWidth,
+              decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 67, 190, 72),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 3.0)),
+            ),
+          ),
+        )
+      ],
     );
   }
 }

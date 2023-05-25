@@ -1,31 +1,35 @@
+import 'package:chatapp/components/chat.dart';
 import 'package:chatapp/pages/friends/new_friend.dart';
 import 'package:chatapp/pages/main_page.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:transition/transition.dart';
 
 import '../modules/dragbar.dart';
 
 class User {
   String name;
+  String id;
   String username;
   String email;
   String avatar;
   bool online = false;
   int lastSeen;
   String department = "";
-  List<User> friends;
   User(
-      {required this.name,
+      {required this.id,
+      required this.name,
       required this.username,
       required this.email,
       required this.avatar,
       required this.online,
-      required this.lastSeen,
-      required this.friends});
+      required this.lastSeen});
 }
 
 class FriendPage extends StatefulWidget {
@@ -34,9 +38,55 @@ class FriendPage extends StatefulWidget {
 }
 
 class _FriendPageState extends State<FriendPage> {
+  // get friends
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+  late Future<List<User>> futureFriendsList = Future.value([]);
+  Future<void> getFriends() async {
+    var auth_box = await Hive.openBox('auth');
+    var token = auth_box.get("token");
+    Dio dio = Dio();
+    dio.options.headers["authorization"] = "Bearer ${token}";
+    Response response = await dio.get("${dotenv.get("baseUrl")}friend/friend");
+    print(response.data);
+    if (response.data["success"]) {
+      var data = response.data["data"];
+      List<User> friends = [
+        for (var i in data)
+          User(
+            id: i["id"],
+            name: i["user"]["Name"],
+            username: i["user"]["username"],
+            email: i["user"]["email"],
+            avatar: i["avatar"],
+            online: i["online"],
+            lastSeen: i["lastSeen"],
+          )
+      ];
+      setState(() {
+        futureFriendsList = Future.value(friends);
+        _refreshController.refreshCompleted();
+      });
+    }
+  }
+
+  void deleteFriend(String id) async {
+    var auth_box = await Hive.openBox('auth');
+    var token = auth_box.get("token");
+    Dio dio = Dio();
+    dio.options.headers["authorization"] = "Bearer ${token}";
+    Response response =
+        await dio.delete("${dotenv.get("baseUrl")}friend/friend", data: id);
+
+    if (response.data["success"]) {
+      getFriends();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    getFriends();
   }
 
   @override
@@ -91,7 +141,76 @@ class _FriendPageState extends State<FriendPage> {
               ),
             ],
           ),
+          body: FutureBuilder<List<User>>(
+              future: futureFriendsList,
+              builder: (context, snapshot) {
+                return SmartRefresher(
+                    physics: BouncingScrollPhysics(),
+                    header: ClassicHeader(
+                      idleText: "下拉刷新",
+                      refreshingText: "更新中",
+                      completeText: "更新完成",
+                      releaseText: "放開更新",
+                      failedText: "更新失敗",
+                      refreshingIcon: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    ),
+                    controller: _refreshController,
+                    onRefresh: getFriends,
+                    child: FriendList(snapshot));
+              }),
         ));
+  }
+
+  Widget FriendList(AsyncSnapshot snapshot) {
+    if (snapshot.hasData) {
+      return ListView.builder(
+          scrollDirection: Axis.vertical,
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
+          itemBuilder: (context, index) {
+            return ListTile(
+              leading: Avata(
+                  image: snapshot.data[index].avatar,
+                  isOnline: snapshot.data[index].online,
+                  radius: 25,
+                  dotWidth: 15),
+              title: Text(snapshot.data[index].name),
+              subtitle: Text(snapshot.data[index].username),
+              trailing: PopupMenuButton<String>(
+                child: Icon(Icons.more_vert),
+                onSelected: (String item) {
+                  switch (item) {
+                    case "delete":
+                      print("delete");
+                      deleteFriend(snapshot.data[index].id);
+                      break;
+                    default:
+                      print(item);
+                  }
+                },
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  const PopupMenuItem<String>(
+                    value: "d",
+                    child: Text('Item 1'),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: "delete",
+                    child: Text('刪除好友'),
+                  ),
+                ],
+              ),
+            );
+          },
+          itemCount: snapshot.data.length);
+    } else {
+      return Center(child: CircularProgressIndicator());
+    }
   }
 
   Future<dynamic> ShowNewMessage(BuildContext context) {
@@ -99,13 +218,14 @@ class _FriendPageState extends State<FriendPage> {
     for (int i = 0; i < 10; i++) {
       users.add(
         User(
-            name: "陳小明",
-            username: "A1105502",
-            email: "",
-            avatar: "https://i.imgur.com/3x5q2Yk.jpg",
-            online: true,
-            lastSeen: 0,
-            friends: []),
+          id: "123",
+          name: "陳小明",
+          username: "A1105502",
+          email: "",
+          avatar: "https://i.imgur.com/3x5q2Yk.jpg",
+          online: true,
+          lastSeen: 0,
+        ),
       );
     }
     // Add list
