@@ -86,11 +86,13 @@ class _InviteModalState extends State<InviteModal> {
             ),
             Expanded(
               child: Invite.isEmpty
-                  ? (loading ?  Center(
-                      child: Text('載入中...'),
-                    ):Center(
-                      child: Text('列表為空'),
-                    ))
+                  ? (loading
+                      ? Center(
+                          child: Text('載入中...'),
+                        )
+                      : Center(
+                          child: Text('列表為空'),
+                        ))
                   : ListView.builder(
                       itemCount: Invite.length,
                       shrinkWrap: true,
@@ -100,21 +102,16 @@ class _InviteModalState extends State<InviteModal> {
                           padding: EdgeInsets.only(top: 10, bottom: 10),
                           child: Dismissible(
                             direction: _dismissDirection,
-                            onDismissed: (direction) {
+                            onDismissed: (direction) async {
                               if (direction == DismissDirection.endToStart) {
                                 delete(Invite[index].id);
                                 Invite.removeAt(index);
                                 setState(() {});
-                                toast.successToast(context,
-                                    alignment: Alignment.topCenter,
-                                    message: "已刪除好友邀請");
                               } else {
                                 accept(Invite[index].id);
-                                Invite.removeAt(index);
-                                setState(() {});
-                                toast.successToast(context,
-                                    alignment: Alignment.topCenter,
-                                    message: "已接受好友邀請");
+                                setState(() {
+                                  Invite.removeAt(index);
+                                });
                               }
                             },
                             dragStartBehavior: DragStartBehavior.down,
@@ -163,9 +160,6 @@ class _InviteModalState extends State<InviteModal> {
                                   child: GestureDetector(
                                       onTap: () {
                                         accept(Invite[index].id);
-                                        toast.successToast(context,
-                                            alignment: Alignment.topCenter,
-                                            message: "已接受好友邀請");
                                         setState(() {
                                           Invite.removeAt(index);
                                         });
