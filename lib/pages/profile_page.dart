@@ -1,9 +1,10 @@
+import 'package:chatapp/components/dialog.dart';
 import 'package:chatapp/pages/main_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-
 import 'auth/login.dart';
+import 'package:flutter_custom_dialog/flutter_custom_dialog.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -51,7 +52,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             colors: [Colors.red, Colors.orange],
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
-                          ).createShader(const Rect.fromLTWH(0.0, 0.0, 80.0, 70.0)),
+                          ).createShader(
+                              const Rect.fromLTWH(0.0, 0.0, 80.0, 70.0)),
                       )),
                 ],
               ),
@@ -93,10 +95,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 title: "學號",
                 value: user.username,
               ),
-              info(
-                icon: Icon(Icons.cake_outlined, color: Colors.orange),
-                title: "生日",
-                value: "07/14",
+              Row(
+                children: [
+                  info(
+                    icon: Icon(Icons.cake_outlined, color: Colors.orange),
+                    title: "生日",
+                    value: "07/14",
+                  )
+                ],
               ),
               info(
                 icon: Icon(CupertinoIcons.phone, color: Colors.orange),
@@ -158,6 +164,9 @@ class LogoutBtn extends StatelessWidget {
 }
 
 class info extends StatelessWidget {
+  ChangValue(){
+
+  }
   Icon icon;
   String title;
   String value;
@@ -206,7 +215,9 @@ class info extends StatelessWidget {
                   ),
                   Expanded(child: SizedBox(), flex: 1),
                   TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        //YYDialogDemo(context,);
+                      },
                       child: Text(
                         value,
                         style: TextStyle(
@@ -217,3 +228,4 @@ class info extends StatelessWidget {
         ));
   }
 }
+

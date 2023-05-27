@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:chatview/chatview.dart';
+import 'package:chatapp/components/theme.dart';
+import 'package:chatapp/components/data.dart';
 
 class ChatDetailPageAppBar extends StatelessWidget
     implements PreferredSizeWidget {
