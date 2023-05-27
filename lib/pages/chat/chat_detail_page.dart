@@ -20,9 +20,9 @@ class ChatDetailPage extends StatelessWidget {
       title: 'Flutter Chat UI Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: const Color(0xffEE5366),
+        primaryColor: const Color.fromARGB(255, 255, 255, 255),
         colorScheme:
-            ColorScheme.fromSwatch(accentColor: const Color(0xffEE5366)),
+            ColorScheme.fromSwatch(accentColor: const Color.fromARGB(255, 255, 255, 255)),
       ),
       home: const ChatScreen(),
     );
@@ -256,7 +256,7 @@ class _ChatScreenState extends State<ChatScreen> {
           verticalBarColor: theme.verticalBarColor,
           repliedMsgAutoScrollConfig: RepliedMsgAutoScrollConfig(
             enableHighlightRepliedMsg: true,
-            highlightColor: Colors.pinkAccent.shade100,
+            highlightColor: Colors.orange,
             highlightScale: 1.1,
           ),
           textStyle: const TextStyle(
