@@ -1,173 +1,279 @@
-import 'package:chatapp/components/chat_bubble.dart';
-import 'package:chatapp/components/chat_detail_page_appbar.dart';
-import 'package:chatapp/models/chat_message.dart';
-import 'package:chatapp/models/send_menu_items.dart';
+// import 'package:chatapp/components/chat_bubble.dart';
+// import 'package:chatapp/components/chat_detail_page_appbar.dart';
+// import 'package:chatapp/models/chat_message.dart';
+// import 'package:chatapp/models/send_menu_items.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-enum MessageType{
-  Sender,
-  Receiver,
-}
+import 'package:chatapp/components/theme.dart';
+import 'package:chatapp/components/data.dart';
+import 'package:chatview/chatview.dart';
 
 
-class ChatDetailPage extends StatefulWidget{
+
+
+class ChatDetailPage extends StatelessWidget {
+  const ChatDetailPage({Key? key}) : super(key: key);
+
   @override
-  _ChatDetailPageState createState() => _ChatDetailPageState();
-}
-
-class _ChatDetailPageState extends State<ChatDetailPage> {
-  List<ChatMessage> chatMessage = [
-    ChatMessage(message: "Hi John", type: MessageType.Receiver),
-    ChatMessage(message: "Hope you are doin good", type: MessageType.Receiver),
-    ChatMessage(message: "Hello Jane, I'm good what about you", type: MessageType.Sender),
-    ChatMessage(message: "I'm fine, Working from home", type: MessageType.Receiver),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
-  ];
-
-  List<SendMenuItems> menuItems = [
-    SendMenuItems(text: "Photos & Videos", icons: Icons.image, color: Colors.amber),
-    SendMenuItems(text: "Document", icons: Icons.insert_drive_file, color: Colors.blue),
-    SendMenuItems(text: "Audio", icons: Icons.music_note, color: Colors.orange),
-    SendMenuItems(text: "Location", icons: Icons.location_on, color: Colors.green),
-    SendMenuItems(text: "Contact", icons: Icons.person, color: Colors.purple),
-  ];
-
-  void showModal(){
-    showModalBottomSheet(
-      context: context,
-      builder: (context){
-        return Container(
-          height: MediaQuery.of(context).size.height/2,
-          color: Color(0xff737373),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(topRight: Radius.circular(20),topLeft: Radius.circular(20)),
-            ),
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 16,),
-                Center(
-                  child: Container(
-                    height: 4,
-                    width: 50,
-                    color: Colors.grey.shade200,
-                  ),
-                ),
-                SizedBox(height: 10,),
-                ListView.builder(
-                  itemCount: menuItems.length,
-                  shrinkWrap: true,
-                  physics: BouncingScrollPhysics(),
-                  itemBuilder: (context, index){
-                    return Container(
-                      padding: EdgeInsets.only(top: 10,bottom: 10),
-                      child: ListTile(
-                        leading: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            color: menuItems[index].color.shade50,
-                          ),
-                          height: 50,
-                          width: 50,
-                          child: Icon(menuItems[index].icons,size: 20,color: menuItems[index].color.shade400,),
-                        ),
-                        title: Text(menuItems[index].text),
-                      ),
-                    );
-                  },
-                )
-              ],
-            ),
-          ),
-        );
-      }
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Chat UI Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: const Color(0xffEE5366),
+        colorScheme:
+            ColorScheme.fromSwatch(accentColor: const Color(0xffEE5366)),
+      ),
+      home: const ChatScreen(),
     );
   }
+}
+
+class ChatScreen extends StatefulWidget {
+  const ChatScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  AppTheme theme = LightTheme();
+  bool isDarkTheme = false;
+  final currentUser = ChatUser(
+    id: '1',
+    name: 'Flutter',
+    profilePhoto: Data.profileImage,
+  );
+  final _chatController = ChatController(
+    initialMessageList: Data.messageList,
+    scrollController: ScrollController(),
+    chatUsers: [
+      ChatUser(
+        id: '2',
+        name: 'Simform',
+        profilePhoto: Data.profileImage,
+      ),
+      ChatUser(
+        id: '3',
+        name: 'Jhon',
+        profilePhoto: Data.profileImage,
+      ),
+      ChatUser(
+        id: '4',
+        name: 'Mike',
+        profilePhoto: Data.profileImage,
+      ),
+      ChatUser(
+        id: '5',
+        name: 'Rich',
+        profilePhoto: Data.profileImage,
+      ),
+    ],
+  );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ChatDetailPageAppBar(),
-      body: Stack(
-        children: <Widget>[
-          ListView.builder(
-            itemCount: chatMessage.length,
-            shrinkWrap: true,
-            padding: EdgeInsets.only(top: 10,bottom: 90),
-            physics: BouncingScrollPhysics(),
-            itemBuilder: (context, index){
-            return ChatBubble(
-              chatMessage: chatMessage[index],
-            );
-            },
-         ),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Container(
-              padding: EdgeInsets.only(left: 16,bottom: 10),
-              height: 80,
-              width: double.infinity,
-              color: Colors.white,
-              child: Row(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: (){
-                      showModal();
-                    },
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.blueGrey,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Icon(Icons.add,color: Colors.white,size: 21,),
-                    ),
-                  ),
-                  SizedBox(width: 16,),
-                  Expanded(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: "Type message...",
-                        hintStyle: TextStyle(color: Colors.grey.shade500),
-                        border: InputBorder.none
-                      ),
-                    ),
-                  ),
+      body: ChatView(
+        currentUser: currentUser,
+        chatController: _chatController,
+        onSendTap: _onSendTap,
+        chatViewState: ChatViewState.hasMessages,
+        chatViewStateConfig: ChatViewStateConfiguration(
+          loadingWidgetConfig: ChatViewStateWidgetConfiguration(
+            loadingIndicatorColor: theme.outgoingChatBubbleColor,
+          ),
+          onReloadButtonTap: () {},
+        ),
+        typeIndicatorConfig: TypeIndicatorConfiguration(
+          flashingCircleBrightColor: theme.flashingCircleBrightColor,
+          flashingCircleDarkColor: theme.flashingCircleDarkColor,
+        ),
+        appBar: ChatViewAppBar(
+          onBackPress: () => {Navigator.of(context, rootNavigator: true).pop(context)},
+          elevation: theme.elevation,
+          backGroundColor: theme.appBarColor,
+          profilePicture: Data.profileImage,
+          backArrowColor: theme.backArrowColor,
+          chatTitle: "Chat view",
+          chatTitleTextStyle: TextStyle(
+            color: theme.appBarTitleTextStyle,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            letterSpacing: 0.25,
+          ),
+          userStatus: "online",
+          userStatusTextStyle: const TextStyle(color: Colors.grey),
+          actions: [
+            IconButton(
+              onPressed: _onThemeIconTap,
+              icon: Icon(
+                isDarkTheme
+                    ? Icons.brightness_4_outlined
+                    : Icons.dark_mode_outlined,
+                color: theme.themeIconColor,
+              ),
+            ),
+          ],
+        ),
+        chatBackgroundConfig: ChatBackgroundConfiguration(
+          messageTimeIconColor: theme.messageTimeIconColor,
+          messageTimeTextStyle: TextStyle(color: theme.messageTimeTextColor),
+          defaultGroupSeparatorConfig: DefaultGroupSeparatorConfiguration(
+            textStyle: TextStyle(
+              color: theme.chatHeaderColor,
+              fontSize: 17,
+            ),
+          ),
+          backgroundColor: theme.backgroundColor,
+        ),
+        sendMessageConfig: SendMessageConfiguration(
+          imagePickerIconsConfig: ImagePickerIconsConfiguration(
+            cameraIconColor: theme.cameraIconColor,
+            galleryIconColor: theme.galleryIconColor,
+          ),
+          replyMessageColor: theme.replyMessageColor,
+          defaultSendButtonColor: theme.sendButtonColor,
+          replyDialogColor: theme.replyDialogColor,
+          replyTitleColor: theme.replyTitleColor,
+          textFieldBackgroundColor: theme.textFieldBackgroundColor,
+          closeIconColor: theme.closeIconColor,
+          textFieldConfig: TextFieldConfiguration(
+            textStyle: TextStyle(color: theme.textFieldTextColor),
+          ),
+          micIconColor: theme.replyMicIconColor,
+          voiceRecordingConfiguration: VoiceRecordingConfiguration(
+            backgroundColor: theme.waveformBackgroundColor,
+            recorderIconColor: theme.recordIconColor,
+            waveStyle: WaveStyle(
+              showMiddleLine: false,
+              waveColor: theme.waveColor ?? Colors.white,
+              extendWaveform: true,
+            ),
+          ),
+        ),
+        chatBubbleConfig: ChatBubbleConfiguration(
+          outgoingChatBubbleConfig: ChatBubble(
+            linkPreviewConfig: LinkPreviewConfiguration(
+              backgroundColor: theme.linkPreviewOutgoingChatColor,
+              bodyStyle: theme.outgoingChatLinkBodyStyle,
+              titleStyle: theme.outgoingChatLinkTitleStyle,
+            ),
+            color: theme.outgoingChatBubbleColor,
+          ),
+          inComingChatBubbleConfig: ChatBubble(
+            linkPreviewConfig: LinkPreviewConfiguration(
+              linkStyle: TextStyle(
+                color: theme.inComingChatBubbleTextColor,
+                decoration: TextDecoration.underline,
+              ),
+              backgroundColor: theme.linkPreviewIncomingChatColor,
+              bodyStyle: theme.incomingChatLinkBodyStyle,
+              titleStyle: theme.incomingChatLinkTitleStyle,
+            ),
+            textStyle: TextStyle(color: theme.inComingChatBubbleTextColor),
+            senderNameTextStyle:
+                TextStyle(color: theme.inComingChatBubbleTextColor),
+            color: theme.inComingChatBubbleColor,
+          ),
+        ),
+        replyPopupConfig: ReplyPopupConfiguration(
+          backgroundColor: theme.replyPopupColor,
+          buttonTextStyle: TextStyle(color: theme.replyPopupButtonColor),
+          topBorderColor: theme.replyPopupTopBorderColor,
+        ),
+        reactionPopupConfig: ReactionPopupConfiguration(
+          shadow: BoxShadow(
+            color: isDarkTheme ? Colors.black54 : Colors.grey.shade400,
+            blurRadius: 20,
+          ),
+          backgroundColor: theme.reactionPopupColor,
+        ),
+        messageConfig: MessageConfiguration(
+          messageReactionConfig: MessageReactionConfiguration(
+            backgroundColor: theme.messageReactionBackGroundColor,
+            borderColor: theme.messageReactionBackGroundColor,
+            reactedUserCountTextStyle:
+                TextStyle(color: theme.inComingChatBubbleTextColor),
+            reactionCountTextStyle:
+                TextStyle(color: theme.inComingChatBubbleTextColor),
+            reactionsBottomSheetConfig: ReactionsBottomSheetConfiguration(
+              backgroundColor: theme.backgroundColor,
+              reactedUserTextStyle: TextStyle(
+                color: theme.inComingChatBubbleTextColor,
+              ),
+              reactionWidgetDecoration: BoxDecoration(
+                color: theme.inComingChatBubbleColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: isDarkTheme ? Colors.black12 : Colors.grey.shade200,
+                    offset: const Offset(0, 20),
+                    blurRadius: 40,
+                  )
                 ],
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              padding: EdgeInsets.only(right: 30,bottom: 50),
-              child: FloatingActionButton(
-                onPressed: (){},
-                child: Icon(Icons.send,color: Colors.white,),
-                backgroundColor: Colors.pink,
-                elevation: 0,
-              ),
+          imageMessageConfig: ImageMessageConfiguration(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
+            shareIconConfig: ShareIconConfiguration(
+              defaultIconBackgroundColor: theme.shareIconBackgroundColor,
+              defaultIconColor: theme.shareIconColor,
             ),
-          )
-        ],
+          ),
+        ),
+        profileCircleConfig:
+            ProfileCircleConfiguration(profileImageUrl: Data.profileImage),
+        repliedMessageConfig: RepliedMessageConfiguration(
+          backgroundColor: theme.repliedMessageColor,
+          verticalBarColor: theme.verticalBarColor,
+          repliedMsgAutoScrollConfig: RepliedMsgAutoScrollConfig(
+            enableHighlightRepliedMsg: true,
+            highlightColor: Colors.pinkAccent.shade100,
+            highlightScale: 1.1,
+          ),
+          textStyle: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.25,
+          ),
+          replyTitleTextStyle: TextStyle(color: theme.repliedTitleTextColor),
+        ),
+        swipeToReplyConfig: SwipeToReplyConfiguration(
+          replyIconColor: theme.swipeToReplyIconColor,
+        ),
       ),
     );
+  }
+
+  void _onSendTap(
+    String message,
+    ReplyMessage replyMessage,
+    MessageType messageType,
+  ) {
+    final id = int.parse(Data.messageList.last.id) + 1;
+    _chatController.addMessage(
+      Message(
+        id: id.toString(),
+        createdAt: DateTime.now(),
+        message: message,
+        sendBy: currentUser.id,
+        replyMessage: replyMessage,
+        messageType: messageType,
+      ),
+    );
+  }
+
+  void _onThemeIconTap() {
+    setState(() {
+      if (isDarkTheme) {
+        theme = LightTheme();
+        isDarkTheme = false;
+      } else {
+        theme = DarkTheme();
+        isDarkTheme = true;
+      }
+    });
   }
 }
