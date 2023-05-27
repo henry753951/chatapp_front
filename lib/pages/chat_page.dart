@@ -106,7 +106,11 @@ class _ChatPageState extends State<ChatPage> {
     List<ChatUsers> chatUsers = [];
     for (var i in data["data"]) {
       if (i["members"].length == 2) {
-        i["roomName"] = i["members"][1]["user"]["Name"];
+        if (i["members"][0]["user"]["Name"] == auth_box.get("user")["Name"]) {
+          i["roomName"] = i["members"][1]["user"]["Name"];
+        } else {
+          i["roomName"] = i["members"][0]["user"]["Name"];
+        }
       }
       chatUsers.add(ChatUsers(
           text: i["roomName"],
