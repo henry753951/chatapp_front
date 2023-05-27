@@ -11,6 +11,19 @@ import 'package:chatapp/components/theme.dart';
 import 'package:chatapp/components/data.dart';
 import 'package:chatview/chatview.dart';
 
+MessageType getMessageType(String text) {
+  switch (text) {
+    case "MessageType.text":
+      return MessageType.text;
+    case "MessageType.image":
+      return MessageType.image;
+    case "MessageType.voice":
+      return MessageType.voice;
+    default:
+      return MessageType.text;
+  }
+}
+
 class ChatDetailPage extends StatelessWidget {
   const ChatDetailPage({Key? key}) : super(key: key);
 
@@ -21,8 +34,8 @@ class ChatDetailPage extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: const Color.fromARGB(255, 255, 255, 255),
-        colorScheme:
-            ColorScheme.fromSwatch(accentColor: const Color.fromARGB(255, 255, 255, 255)),
+        colorScheme: ColorScheme.fromSwatch(
+            accentColor: const Color.fromARGB(255, 255, 255, 255)),
       ),
       home: const ChatScreen(),
     );
@@ -53,47 +66,45 @@ class _ChatScreenState extends State<ChatScreen> {
         name: 'Simform',
         profilePhoto: Data.profileImage,
       ),
-      ChatUser(
-        id: '3',
-        name: 'Jhon',
-        profilePhoto: Data.profileImage,
-      ),
-      ChatUser(
-        id: '4',
-        name: 'Mike',
-        profilePhoto: Data.profileImage,
-      ),
-      ChatUser(
-        id: '5',
-        name: 'Rich',
-        profilePhoto: Data.profileImage,
-      ),
     ],
   );
+  void onMessage(value) {
+    print(value);
+    MessageType messageType = getMessageType(value['messageType']);
+    MessageType replyMessageType =
+        getMessageType(value['replyMessage']['message_type']);
+
+    Message msg = Message(
+      id: (int.parse(Data.messageList.last.id) + 1).toString(),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(
+          (value['createdAt'] as double).toInt()),
+      message: value['message'],
+      sendBy: value['sendBy'],
+      replyMessage: value['replyMessage']['replyBy'] == ''
+          ? const ReplyMessage()
+          : ReplyMessage(
+              messageId: value['replyMessage']['id'],
+              messageType: replyMessageType,
+              message: value['replyMessage']['message'],
+              replyBy: value['replyMessage']['replyBy'],
+              replyTo: value['replyMessage']['replyTo'],
+              voiceMessageDuration: null,
+            ),
+      messageType: messageType,
+    );
+    _chatController.addMessage(msg);
+  }
 
   @override
   void initState() {
     super.initState();
-    SocketService.addListener((value) {
-      print(value);
-      Message msg = Message(
-        id: (int.parse(Data.messageList.last.id) + 1).toString(),
-        createdAt: DateTime.fromMillisecondsSinceEpoch((value['createdAt'] as double).toInt()),
-        message: value['message'],
-        sendBy: value['sendBy'],
-        replyMessage:value['replyMessage']['replyBy'] == ''? const ReplyMessage() : ReplyMessage(
-          messageId: value['replyMessage']['id'],
-          messageType: MessageType.text,
-          message: value['replyMessage']['message'],
-          replyBy: value['replyMessage']['replyBy'],
-          replyTo: value['replyMessage']['replyTo'],
-          voiceMessageDuration: null,
+    SocketService.addListener(onMessage);
+  }
 
-        ),
-        messageType: MessageType.text,
-      );
-      _chatController.addMessage(msg);
-    });
+  @override
+  void dispose() {
+    super.dispose();
+    SocketService.removeListener(onMessage);
   }
 
   @override
