@@ -18,13 +18,18 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  int InviteLength=0;
+  int InviteLength = 0;
   @override
   void initState() {
     super.initState();
     getInvite().then((value) {
       setState(() {
         InviteLength = value.length;
+      });
+      getChatUsers().then((value) {
+        setState(() {
+          chatUsers = value;
+        });
       });
     });
   }
@@ -47,7 +52,6 @@ class _ChatPageState extends State<ChatPage> {
     return Invite;
   }
 
-
   Future<void> showModal() async {
     showModalBottomSheet(
         isScrollControlled: true,
@@ -59,6 +63,11 @@ class _ChatPageState extends State<ChatPage> {
           return InviteModal();
         }).then((value) => {
           // 當modal關閉後，重新取得邀請數量
+          getChatUsers().then((value) {
+            setState(() {
+              chatUsers = value;
+            });
+          }),
           getInvite().then((value) {
             setState(() {
               InviteLength = value.length;
@@ -74,6 +83,28 @@ class _ChatPageState extends State<ChatPage> {
         image: "images/userImage1.jpeg",
         time: "Now")
   ];
+  Future<List<ChatUsers>> getChatUsers() async {
+    var auth_box = await Hive.openBox('auth');
+    var token = auth_box.get("token");
+    Dio dio = new Dio();
+    dio.options.headers["authorization"] = "Bearer ${token}";
+    Response response = await dio.get("${dotenv.get("baseUrl")}room");
+    var data = response.data;
+    print(data);
+    List<ChatUsers> chatUsers = [];
+    for (var i in data["data"]) {
+      if (i["members"].length == 2) {
+        i["roomName"] = i["members"][1]["user"]["Name"];
+      }
+      chatUsers.add(ChatUsers(
+          text: i["roomName"],
+          secondaryText: "Awesome Setup",
+          image: "images/userImage1.jpeg",
+          time: "Now"));
+    }
+    return chatUsers;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,7 +126,8 @@ class _ChatPageState extends State<ChatPage> {
                             colors: [Colors.red, Colors.orange],
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
-                          ).createShader(const Rect.fromLTWH(0.0, 0.0, 80.0, 70.0)),
+                          ).createShader(
+                              const Rect.fromLTWH(0.0, 0.0, 80.0, 70.0)),
                       )),
                   Stack(
                     clipBehavior: Clip.none,
