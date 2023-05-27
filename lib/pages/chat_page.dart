@@ -1,4 +1,5 @@
 import 'package:chatapp/components/chat.dart';
+import 'package:chatapp/components/data.dart';
 import 'package:chatapp/models/chat_users.dart';
 import 'package:chatapp/modules/dragbar.dart';
 import 'package:dio/dio.dart';
@@ -28,7 +29,7 @@ class _ChatPageState extends State<ChatPage> {
       });
       getChatUsers().then((value) {
         setState(() {
-          chatUsers = value;
+          Data.chatUsers = value;
         });
       });
     });
@@ -83,7 +84,7 @@ class _ChatPageState extends State<ChatPage> {
           // 當modal關閉後，重新取得邀請數量
           getChatUsers().then((value) {
             setState(() {
-              chatUsers = value;
+              Data.chatUsers = value;
             });
           }),
           getInvite().then((value) {
@@ -94,23 +95,6 @@ class _ChatPageState extends State<ChatPage> {
         });
   }
 
-  List<ChatUsers> chatUsers = [
-    ChatUsers(
-        text: "Jsssussel",
-        secondaryText: "Awesome Setup",
-        image: "images/userImage1.jpeg",
-        time: "Now"),
-    ChatUsers(
-        text: "duuuudl",
-        secondaryText: "Awesome Setup",
-        image: "images/userImage1.jpeg",
-        time: "Now"),
-    ChatUsers(
-        text: "cccc",
-        secondaryText: "Awesome Setup",
-        image: "images/userImage1.jpeg",
-        time: "Now"),
-  ];
   Future<List<ChatUsers>> getChatUsers() async {
     var auth_box = await Hive.openBox('auth');
     var token = auth_box.get("token");
@@ -242,15 +226,15 @@ class _ChatPageState extends State<ChatPage> {
                       left: Radius.circular(50), right: Radius.circular(50)))),
           Expanded(
             child: ListView.builder(
-              itemCount: chatUsers.length,
+              itemCount: Data.chatUsers.length,
               padding: const EdgeInsets.only(top: 16),
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 return ChatUsersList(
-                  text: chatUsers[index].text,
-                  secondaryText: chatUsers[index].secondaryText,
-                  image: chatUsers[index].image,
-                  time: chatUsers[index].time,
+                  text: Data.chatUsers[index].text,
+                  secondaryText: Data.chatUsers[index].secondaryText,
+                  image: Data.chatUsers[index].image,
+                  time: Data.chatUsers[index].time,
                   isMessageRead: (index == 0 || index == 3) ? true : false,
                 );
               },

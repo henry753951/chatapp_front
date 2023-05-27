@@ -1,5 +1,7 @@
 import 'package:chatview/chatview.dart';
 
+import '../models/chat_users.dart';
+
 class Data {
   static const profileImage =
       "https://raw.githubusercontent.com/SimformSolutionsPvtLtd/flutter_showcaseview/master/example/assets/simform.png";
@@ -114,4 +116,5 @@ class Data {
       // status: MessageStatus.read,
     ),
   ];
+  static List<ChatUsers> chatUsers = [];
 }
