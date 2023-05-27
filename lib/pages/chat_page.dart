@@ -18,7 +18,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  int InviteLength=0;
+  int InviteLength = 0;
   @override
   void initState() {
     super.initState();
@@ -47,6 +47,23 @@ class _ChatPageState extends State<ChatPage> {
     return Invite;
   }
 
+  Future<List<ChatUsers>> getRoom() async {
+    var auth_box = await Hive.openBox('auth');
+    var token = auth_box.get("token");
+    Dio dio = new Dio();
+    dio.options.headers["authorization"] = "Bearer ${token}";
+    Response response = await dio.get("${dotenv.get("baseUrl")}room");
+    var data = response.data;
+    List<ChatUsers> Invite = [
+      for (var i in data)
+        ChatUsers(
+            text: i["id"], //?
+            secondaryText: "https://i.imgur.com/3x5q2Yk.jpg",
+            image: "https://i.imgur.com/3x5q2Yk.jpg", //?
+            time: "now")
+    ];
+    return Invite;
+  }
 
   Future<void> showModal() async {
     showModalBottomSheet(
@@ -69,10 +86,20 @@ class _ChatPageState extends State<ChatPage> {
 
   List<ChatUsers> chatUsers = [
     ChatUsers(
-        text: "Jane Russel",
+        text: "Jsssussel",
         secondaryText: "Awesome Setup",
         image: "images/userImage1.jpeg",
-        time: "Now")
+        time: "Now"),
+    ChatUsers(
+        text: "duuuudl",
+        secondaryText: "Awesome Setup",
+        image: "images/userImage1.jpeg",
+        time: "Now"),
+    ChatUsers(
+        text: "cccc",
+        secondaryText: "Awesome Setup",
+        image: "images/userImage1.jpeg",
+        time: "Now"),
   ];
   @override
   Widget build(BuildContext context) {
@@ -95,7 +122,8 @@ class _ChatPageState extends State<ChatPage> {
                             colors: [Colors.red, Colors.orange],
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
-                          ).createShader(const Rect.fromLTWH(0.0, 0.0, 80.0, 70.0)),
+                          ).createShader(
+                              const Rect.fromLTWH(0.0, 0.0, 80.0, 70.0)),
                       )),
                   Stack(
                     clipBehavior: Clip.none,
