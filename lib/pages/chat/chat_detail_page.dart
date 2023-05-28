@@ -2,35 +2,21 @@
 // import 'package:chatapp/components/chat_detail_page_appbar.dart';
 // import 'package:chatapp/models/chat_message.dart';
 // import 'package:chatapp/models/send_menu_items.dart';
+import 'package:chatapp/models/chat_users.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:chatapp/components/theme.dart';
 import 'package:chatapp/components/data.dart';
 import 'package:chatview/chatview.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive/hive.dart';
 
 
-
-
-class ChatDetailPage extends StatelessWidget {
-  const ChatDetailPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Chat UI Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: const Color.fromARGB(255, 255, 255, 255),
-        colorScheme:
-            ColorScheme.fromSwatch(accentColor: const Color.fromARGB(255, 255, 255, 255)),
-      ),
-      home: const ChatScreen(),
-    );
-  }
-}
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key}) : super(key: key);
+  final String name;
+  const ChatScreen({Key? key,required this.name}) : super(key: key);
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -71,11 +57,11 @@ class _ChatScreenState extends State<ChatScreen> {
     ],
   );
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ChatView(
-        
         currentUser: currentUser,
         chatController: _chatController,
         onSendTap: _onSendTap,
@@ -91,12 +77,13 @@ class _ChatScreenState extends State<ChatScreen> {
           flashingCircleDarkColor: theme.flashingCircleDarkColor,
         ),
         appBar: ChatViewAppBar(
-          onBackPress: () => {Navigator.of(context, rootNavigator: true).pop(context)},
+          onBackPress: () =>
+              {Navigator.of(context, rootNavigator: true).pop(context)},
           elevation: theme.elevation,
           backGroundColor: theme.appBarColor,
           profilePicture: Data.profileImage,
           backArrowColor: theme.backArrowColor,
-          chatTitle: "Chat view",
+          chatTitle: widget.name,
           chatTitleTextStyle: TextStyle(
             color: theme.appBarTitleTextStyle,
             fontWeight: FontWeight.bold,
