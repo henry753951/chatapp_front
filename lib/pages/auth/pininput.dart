@@ -12,7 +12,8 @@ import '../main_page.dart';
 class VerificationCodeScreen extends StatefulWidget {
   final bool resend;
   final String email;
-  const VerificationCodeScreen({Key? key, required this.resend, required this.email})
+  const VerificationCodeScreen(
+      {Key? key, required this.resend, required this.email})
       : super(key: key);
 
   @override
@@ -43,6 +44,14 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
     } else {
       toast.errorToast(context,
           alignment: Alignment.topLeft, message: response.data["msg"]);
+      if (response.data["msg"] == "已驗證過")
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainPage(),
+          ),
+          (Route<dynamic> route) => false,
+        );
     }
   }
 

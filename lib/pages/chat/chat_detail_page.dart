@@ -2,6 +2,9 @@
 // import 'package:chatapp/components/chat_detail_page_appbar.dart';
 // import 'package:chatapp/models/chat_message.dart';
 // import 'package:chatapp/models/send_menu_items.dart';
+import 'dart:convert';
+
+import 'package:chatapp/services/socket.dart';
 import 'package:chatapp/models/chat_users.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,10 +12,20 @@ import 'package:flutter/material.dart';
 import 'package:chatapp/components/theme.dart';
 import 'package:chatapp/components/data.dart';
 import 'package:chatview/chatview.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:hive/hive.dart';
 
 
+MessageType getMessageType(String text) {
+  switch (text) {
+    case "MessageType.text":
+      return MessageType.text;
+    case "MessageType.image":
+      return MessageType.image;
+    case "MessageType.voice":
+      return MessageType.voice;
+    default:
+      return MessageType.text;
+  }
+}
 
 class ChatScreen extends StatefulWidget {
   final String name;
@@ -39,25 +52,46 @@ class _ChatScreenState extends State<ChatScreen> {
         name: 'Simform',
         profilePhoto: Data.profileImage,
       ),
-      ChatUser(
-        id: '3',
-        name: 'Jhon',
-        profilePhoto: Data.profileImage,
-      ),
-      ChatUser(
-        id: '4',
-        name: 'Mike',
-        profilePhoto: Data.profileImage,
-      ),
-      ChatUser(
-        id: '5',
-        name: 'Rich',
-        profilePhoto: Data.profileImage,
-      ),
     ],
   );
+    void onMessage(value) {
+    print(value);
+    MessageType messageType = getMessageType(value['messageType']);
+    MessageType replyMessageType =
+        getMessageType(value['replyMessage']['message_type']);
 
+    Message msg = Message(
+      id: (int.parse(Data.messageList.last.id) + 1).toString(),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(
+          (value['createdAt'] as double).toInt()),
+      message: value['message'],
+      sendBy: value['sendBy'],
+      replyMessage: value['replyMessage']['replyBy'] == ''
+          ? const ReplyMessage()
+          : ReplyMessage(
+              messageId: value['replyMessage']['id'],
+              messageType: replyMessageType,
+              message: value['replyMessage']['message'],
+              replyBy: value['replyMessage']['replyBy'],
+              replyTo: value['replyMessage']['replyTo'],
+              voiceMessageDuration: null,
+            ),
+      messageType: messageType,
+    );
+    _chatController.addMessage(msg);
+  }
 
+  @override
+  void initState() {
+    super.initState();
+    SocketService.addListener(onMessage);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    SocketService.removeListener(onMessage);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -241,16 +275,23 @@ class _ChatScreenState extends State<ChatScreen> {
     MessageType messageType,
   ) {
     final id = int.parse(Data.messageList.last.id) + 1;
-    _chatController.addMessage(
-      Message(
-        id: id.toString(),
-        createdAt: DateTime.now(),
-        message: message,
-        sendBy: currentUser.id,
-        replyMessage: replyMessage,
-        messageType: messageType,
-      ),
-    );
+
+    var toServer = {
+      "message": message,
+      "sendBy": currentUser.id,
+      "messageType": messageType.toString(),
+      "replyMessage": {
+        'message': replyMessage.message,
+        'replyBy': replyMessage.replyBy,
+        'replyTo': replyMessage.replyTo,
+        'message_type': replyMessage.messageType.toString(),
+        'id': replyMessage.messageId,
+        'voiceMessageDuration': replyMessage.voiceMessageDuration,
+      },
+      "createdAt": DateTime.now().millisecondsSinceEpoch,
+    };
+    SocketService.stompClient
+        .send(destination: "/app/chat", body: json.encode(toServer));
   }
 
   void _onThemeIconTap() {

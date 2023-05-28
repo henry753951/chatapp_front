@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'package:chatapp/services/socket.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pinput/pinput.dart';
-
+import 'dart:async';
+import 'dart:convert';
 import 'modules/utils.dart';
 import 'package:chatapp/pages/auth/login.dart';
 import 'package:chatapp/pages/auth/pininput.dart';
@@ -11,7 +13,14 @@ import 'package:flutter/services.dart';
 import 'pages/main_page.dart';
 import "package:hive_flutter/hive_flutter.dart";
 
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
+
+
+
 void main() async {
+  SocketService.init();
   await Hive.initFlutter();
   if (kReleaseMode) {
     await dotenv.load(fileName: ".env.production");
@@ -99,7 +108,7 @@ class _MyAppState extends State<MyApp> {
             : (logined
                 ? (active
                     ? MainPage()
-                    : VerificationCodeScreen(resend: true,email: email))
+                    : VerificationCodeScreen(resend: true, email: email))
                 : const LoginScreen()),
       ),
     );
