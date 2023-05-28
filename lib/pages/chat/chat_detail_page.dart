@@ -24,27 +24,9 @@ MessageType getMessageType(String text) {
   }
 }
 
-class ChatDetailPage extends StatelessWidget {
-  const ChatDetailPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Chat UI Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: const Color.fromARGB(255, 255, 255, 255),
-        colorScheme: ColorScheme.fromSwatch(
-            accentColor: const Color.fromARGB(255, 255, 255, 255)),
-      ),
-      home: const ChatScreen(),
-    );
-  }
-}
-
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key}) : super(key: key);
-
+  const ChatScreen({Key? key,required this.name}) : super(key: key);
+  final String name;
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
@@ -132,7 +114,7 @@ class _ChatScreenState extends State<ChatScreen> {
           backGroundColor: theme.appBarColor,
           profilePicture: Data.profileImage,
           backArrowColor: theme.backArrowColor,
-          chatTitle: "Chat view",
+          chatTitle: widget.name,
           chatTitleTextStyle: TextStyle(
             color: theme.appBarTitleTextStyle,
             fontWeight: FontWeight.bold,
