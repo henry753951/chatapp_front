@@ -8,7 +8,7 @@ class Data {
   static final messageList = [
     Message(
       id: '13',
-      message: "https://miro.medium.com/max/1000/0*s7of7kWnf9fDg4XM.jpeg",
+      message: "https://stackoverflow.com/questions/55536461/flutter-unhandled-exception-bad-state-cannot-add-new-events-after-calling-clo",
       createdAt: DateTime.now(),
       sendBy: '2',
       reaction: Reaction(reactions: ['\u{2764}'], reactedUserIds: ['1']),
