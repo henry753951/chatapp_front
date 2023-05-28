@@ -5,14 +5,11 @@
 import 'dart:convert';
 
 import 'package:chatapp/services/socket.dart';
-import 'package:chatapp/models/chat_users.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:chatapp/components/theme.dart';
 import 'package:chatapp/components/data.dart';
 import 'package:chatview/chatview.dart';
-
 
 MessageType getMessageType(String text) {
   switch (text) {
@@ -28,9 +25,8 @@ MessageType getMessageType(String text) {
 }
 
 class ChatScreen extends StatefulWidget {
-  final String name;
   const ChatScreen({Key? key,required this.name}) : super(key: key);
-
+  final String name;
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
@@ -54,7 +50,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     ],
   );
-    void onMessage(value) {
+  void onMessage(value) {
     print(value);
     MessageType messageType = getMessageType(value['messageType']);
     MessageType replyMessageType =
@@ -92,6 +88,7 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
     SocketService.removeListener(onMessage);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
