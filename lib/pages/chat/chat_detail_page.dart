@@ -47,9 +47,9 @@ class _ChatScreenState extends State<ChatScreen> {
   bool isDarkTheme = false;
 
   late ChatUser currentUser =
-      ChatUser(name: widget.name, id: widget.room_id, profilePhoto: "");
+      ChatUser(name: widget.name, id: Data.currentUser["id"], profilePhoto: "");
   final ChatController _chatController = ChatController(
-    initialMessageList: Data.messageList,
+    initialMessageList: [],
     scrollController: ScrollController(),
     chatUsers: [],
   );
@@ -86,15 +86,15 @@ class _ChatScreenState extends State<ChatScreen> {
     return message;
   }
 
-  void onMessage(value) {
-    print(value);
-
+  void onMessage(value_) {
+    if(value_['room_id'] != widget.room_id) return;
+    var value = value_['message'];
     MessageType messageType = getMessageType(value['messageType']);
     MessageType replyMessageType =
         getMessageType(value['replyMessage']['message_type']);
 
     Message msg = Message(
-      id: (int.parse(Data.messageList.last.id) + 1).toString(),
+      id: Data.messageList.isEmpty ? '0' : (int.parse(Data.messageList.last.id) + 1).toString(),
       createdAt: DateTime.fromMillisecondsSinceEpoch(
           (value['createdAt'] as double).toInt()),
       message: value['message'],
@@ -118,6 +118,14 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     SocketService.addListener(onMessage);
+    _chatController.chatUsers = [
+      for (var i in widget.room_members)
+        ChatUser(
+          name: i["user"]["Name"],
+          id: i["id"],
+          profilePhoto: "",
+        )
+    ];
   }
 
   @override
@@ -332,7 +340,7 @@ class _ChatScreenState extends State<ChatScreen> {
     };
     SocketService.stompClient.send(
         destination: "/app/chat",
-        body: json.encode({"roomid": widget.room_id, "message": toServer}));
+        body: json.encode({"room_id": widget.room_id, "message": toServer}));
   }
 
   void _onThemeIconTap() {

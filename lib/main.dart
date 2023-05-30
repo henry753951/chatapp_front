@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pinput/pinput.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'components/data.dart';
 import 'modules/utils.dart';
 import 'package:chatapp/pages/auth/login.dart';
 import 'package:chatapp/pages/auth/pininput.dart';
@@ -49,6 +50,7 @@ class _MyAppState extends State<MyApp> {
     if (token != null) {
       var payload = parseJwt(token);
       active = payload["active"];
+      Data.currentUser['id'] = payload["id"];
       var exp = payload["exp"];
       var now = DateTime.now().millisecondsSinceEpoch / 1000;
       if (exp < now) {
