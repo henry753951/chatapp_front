@@ -316,13 +316,13 @@ class _FriendPageState extends State<FriendPage> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                //下面建group
-                                /*if (UserGroup.length == 2) {
+                                // 下面建group
+                                if (UserGroup.length == 2) {
                                   MakeGroup("", UserGroup);
                                 } else {
                                   MakeGroup("group", UserGroup);
                                 }
-                                */
+
                               },
                               child: Container(
                                 margin: EdgeInsets.only(left: 10),

@@ -95,10 +95,7 @@ class _ChatScreenState extends State<ChatScreen> {
         getMessageType(value['replyMessage']['message_type']);
 
     Message msg = Message(
-      id: Data.messageList[widget.room_id]!.isEmpty
-          ? '0'
-          : (int.parse(Data.messageList[widget.room_id]!.last.id) + 1)
-              .toString(),
+      id: value['id'],
       createdAt: DateTime.fromMillisecondsSinceEpoch(
           (value['createdAt'] as double).toInt()),
       message: value['message'],
@@ -118,37 +115,37 @@ class _ChatScreenState extends State<ChatScreen> {
     _chatController.addMessage(msg);
   }
 
-  List<Message> getMessage() {
+  List<Message> messages = [];
+  void getMessage() async {
     var auth_box = Hive.box('auth');
     var token = auth_box.get("token");
     Dio dio = Dio();
-    List<Message> message = [];
+
     dio.options.headers["authorization"] = "Bearer ${token}";
     dio.get("${dotenv.get("baseUrl")}room/${widget.room_id}").then((value) {
       var data = value.data["data"];
-      message = [
-        for (var i in data["messages"])
-          Message(
-            id: i["id"],
-            createdAt: DateTime.fromMillisecondsSinceEpoch(i["time"]),
-            message: i["message"],
-            sendBy: i["sender"]["id"],
-            replyMessage: i["replyMessage"] == null
-                ? const ReplyMessage()
-                : ReplyMessage(
-                    messageId: i["replyMessage"]["id"],
-                    messageType:
-                        getMessageType(i["replyMessage"]["message_type"]),
-                    message: i["replyMessage"]["message"],
-                    replyBy: i["replyMessage"]["replyBy"],
-                    replyTo: i["replyMessage"]["replyTo"],
-                    voiceMessageDuration: null,
-                  ),
-            messageType: getMessageType(i["message_type"]),
-          )
-      ];
+      for (var i in data["messages"]) {
+        messages.add(Message(
+          id: i["id"],
+          createdAt: DateTime.fromMillisecondsSinceEpoch(
+              ((i["createdAt"]) as double).toInt()),
+          message: i["message"],
+          sendBy: i["sendBy"],
+          replyMessage: i["replyMessage"] == null
+              ? const ReplyMessage()
+              : ReplyMessage(
+                  messageId: i["replyMessage"]["id"],
+                  messageType:
+                      getMessageType(i["replyMessage"]["message_type"]),
+                  message: i["replyMessage"]["message"],
+                  replyBy: i["replyMessage"]["replyBy"],
+                  replyTo: i["replyMessage"]["replyTo"],
+                  voiceMessageDuration: null,
+                ),
+          messageType: getMessageType(i["messageType"]),
+        ));
+      }
     });
-    return message;
   }
 
   @override
@@ -165,7 +162,8 @@ class _ChatScreenState extends State<ChatScreen> {
     ];
 
     setState(() {
-      Data.messageList[widget.room_id] = getMessage();
+      getMessage();
+      Data.messageList[widget.room_id] = messages;
     });
   }
 
