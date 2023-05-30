@@ -3,9 +3,11 @@ import 'dart:math';
 import 'package:avoid_keyboard/avoid_keyboard.dart';
 import 'package:chatapp/components/dialog.dart';
 import 'package:chatapp/pages/main_page.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 import 'auth/login.dart';
 import 'package:flutter_custom_dialog/flutter_custom_dialog.dart';
@@ -39,10 +41,21 @@ class _ProfilePageState extends State<ProfilePage> {
   //we can upload image from camera or from gallery based on parameter
   Future getImage(ImageSource media) async {
     var img = await picker.pickImage(source: media);
-
     setState(() {
       image = img;
     });
+
+    var auth_box = await Hive.openBox('auth');
+    var token = auth_box.get("token");
+    Dio dio = new Dio();
+    dio.options.headers["authorization"] = "Bearer ${token}";
+    FormData formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(image!.path,
+          filename: image!.path.split('/').last),
+    });
+    var response =
+        await dio.post("${dotenv.get("baseUrl")}user/avatar", data: formData);
+    print(response);
   }
 
   @override
@@ -85,8 +98,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: Stack(clipBehavior: Clip.none, children: [
                     CircleAvatar(
+                      // if image is null then show placeholder else show the image
+                      backgroundImage: image == null
+                          ? AssetImage('lib/images/karbi.jpg')
+                          : AssetImage(image!.path),
                       radius: 50.0,
-                      backgroundColor: Color.fromARGB(255, 226, 235, 113),
+                      // backgroundColor: Color.fromARGB(255, 226, 235, 113),
                     ),
                     Positioned(
                       right: -5,
@@ -123,13 +140,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                           style: TextButton.styleFrom(
                                             textStyle:
                                                 const TextStyle(fontSize: 20),
-                                            padding:
-                                                const EdgeInsets.all(10.0),
+                                            padding: const EdgeInsets.all(10.0),
                                           ),
                                           onPressed: () {
                                             getImage(ImageSource.gallery);
                                             Navigator.pop(context);
-
                                           },
                                           child: Text("從相簿選擇"),
                                         ),
@@ -224,7 +239,9 @@ class LogoutBtn extends StatelessWidget {
             child: Text(
               "登出",
               style: TextStyle(
-                  color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
             ),
           ),
         ),
