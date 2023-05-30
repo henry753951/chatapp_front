@@ -53,23 +53,6 @@ class _ChatPageState extends State<ChatPage> {
     return Invite;
   }
 
-  Future<List<ChatUsers>> getRoom() async {
-    var auth_box = await Hive.openBox('auth');
-    var token = auth_box.get("token");
-    Dio dio = new Dio();
-    dio.options.headers["authorization"] = "Bearer ${token}";
-    Response response = await dio.get("${dotenv.get("baseUrl")}room");
-    var data = response.data;
-    List<ChatUsers> Invite = [
-      for (var i in data)
-        ChatUsers(
-            text: i["id"], //?
-            secondaryText: "https://i.imgur.com/3x5q2Yk.jpg",
-            image: "https://i.imgur.com/3x5q2Yk.jpg", //?
-            time: "now")
-    ];
-    return Invite;
-  }
 
   Future<void> showModal() async {
     showModalBottomSheet(
@@ -107,14 +90,15 @@ class _ChatPageState extends State<ChatPage> {
     for (var i in data["data"]) {
       if (i["members"].length == 2) {
         if (i["members"][0]["user"]["Name"] == auth_box.get("user")["Name"]) {
-          i["roomName"] = i["members"][1]["user"]["Name"];
+          i["roomname"] = i["members"][1]["user"]["Name"];
         } else {
-          i["roomName"] = i["members"][0]["user"]["Name"];
+          i["roomname"] = i["members"][0]["user"]["Name"];
         }
       }
       chatUsers.add(ChatUsers(
-          text: i["roomName"],
-          secondaryText: "Awesome Setup",
+          id: i["id"],
+          text: i["roomname"],
+          secondaryText:i["messages"].length == 0 ? '跟新朋友打聲招呼吧!' : i["messages"][-1] ,
           image: "images/userImage1.jpeg",
           time: "Now"));
     }
@@ -235,6 +219,7 @@ class _ChatPageState extends State<ChatPage> {
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 return ChatUsersList(
+                  id: Data.chatUsers[index].id,
                   text: Data.chatUsers[index].text,
                   secondaryText: Data.chatUsers[index].secondaryText,
                   image: Data.chatUsers[index].image,

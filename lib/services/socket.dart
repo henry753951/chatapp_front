@@ -49,7 +49,6 @@ class SocketService {
       destination: '/topic/greetings',
       callback: (frame) {
         Map<String, dynamic>? result = json.decode(frame.body!);
-        // print(result);
         notifyListeners(result!);
       },
     );
