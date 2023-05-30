@@ -284,8 +284,8 @@ class _FriendPageState extends State<FriendPage> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                if (UserGroup.length == 1) {
-                                  MakeGroup("testname", UserGroup);
+                                if (UserGroup.length == 2) {
+                                  MakeGroup("", UserGroup);
                                 } else {
                                   MakeGroup("group", UserGroup);
                                 }

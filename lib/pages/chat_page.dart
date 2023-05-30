@@ -113,7 +113,12 @@ class _ChatPageState extends State<ChatPage> {
         }
       }
       chatUsers.add(ChatUsers(
-          text: i["roomname"],
+          text: i["roomname"] +
+              "成員:" +
+              i["members"][0]["user"]["Name"] +
+              " " +
+              i["members"][1]["user"]["Name"] +
+              "......",
           secondaryText: "Awesome Setup",
           image: "images/userImage1.jpeg",
           time: "Now"));

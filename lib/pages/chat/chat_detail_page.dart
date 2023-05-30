@@ -25,7 +25,7 @@ MessageType getMessageType(String text) {
 }
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key,required this.name}) : super(key: key);
+  const ChatScreen({Key? key, required this.name}) : super(key: key);
   final String name;
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -34,6 +34,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   AppTheme theme = LightTheme();
   bool isDarkTheme = false;
+
   final currentUser = ChatUser(
     id: '1',
     name: 'Flutter',
@@ -130,6 +131,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 isDarkTheme
                     ? Icons.brightness_4_outlined
                     : Icons.dark_mode_outlined,
+                color: theme.themeIconColor,
+              ),
+            ),
+            IconButton(
+              onPressed: null,
+              icon: Icon(
+                Icons.face,
                 color: theme.themeIconColor,
               ),
             ),
