@@ -15,6 +15,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 import 'package:chatapp/pages/friends_page.dart';
 import 'package:uuid/uuid.dart';
+import 'package:chatapp/models/groupmembers.dart';
 
 MessageType getMessageType(String text) {
   switch (text) {
@@ -50,42 +51,10 @@ class _ChatScreenState extends State<ChatScreen> {
   late ChatUser currentUser =
       ChatUser(name: widget.name, id: Data.currentUser["id"], profilePhoto: "");
   late ChatController _chatController = ChatController(
-    initialMessageList: Data.messageList[widget.room_id] ?? [],
+    initialMessageList: [],
     scrollController: ScrollController(),
     chatUsers: [],
   );
-
-  Future<List<Message>> getmessage() async {
-    var auth_box = await Hive.openBox('auth');
-    var token = auth_box.get("token");
-    Dio dio = new Dio();
-    dio.options.headers["authorization"] = "Bearer ${token}";
-    Response response =
-        await dio.get("${dotenv.get("baseUrl")}room/${widget.room_id}");
-    var data = response.data["data"];
-    List<Message> message = [
-      for (var i in data["messages"])
-        Message(
-          id: i["id"],
-          createdAt: DateTime.fromMillisecondsSinceEpoch(i["time"]),
-          message: i["message"],
-          sendBy: i["sender"]["id"],
-          replyMessage: i["replyMessage"] == null
-              ? const ReplyMessage()
-              : ReplyMessage(
-                  messageId: i["replyMessage"]["id"],
-                  messageType:
-                      getMessageType(i["replyMessage"]["message_type"]),
-                  message: i["replyMessage"]["message"],
-                  replyBy: i["replyMessage"]["replyBy"],
-                  replyTo: i["replyMessage"]["replyTo"],
-                  voiceMessageDuration: null,
-                ),
-          messageType: getMessageType(i["message_type"]),
-        )
-    ];
-    return message;
-  }
 
   void onMessage(value_) {
     if (value_['room_id'] != widget.room_id) return;
@@ -115,43 +84,42 @@ class _ChatScreenState extends State<ChatScreen> {
     _chatController.addMessage(msg);
   }
 
-  List<Message> messages = [];
-  void getMessage() async {
+  Future<List<Message>> getMessage() async {
     var auth_box = Hive.box('auth');
     var token = auth_box.get("token");
     Dio dio = Dio();
-
+    List<Message> messages = [];
     dio.options.headers["authorization"] = "Bearer ${token}";
-    dio.get("${dotenv.get("baseUrl")}room/${widget.room_id}").then((value) {
-      var data = value.data["data"];
-      for (var i in data["messages"]) {
-        messages.add(Message(
-          id: i["id"],
-          createdAt: DateTime.fromMillisecondsSinceEpoch(
-              ((i["createdAt"]) as double).toInt()),
-          message: i["message"],
-          sendBy: i["sendBy"],
-          replyMessage: i["replyMessage"] == null
-              ? const ReplyMessage()
-              : ReplyMessage(
-                  messageId: i["replyMessage"]["id"],
-                  messageType:
-                      getMessageType(i["replyMessage"]["message_type"]),
-                  message: i["replyMessage"]["message"],
-                  replyBy: i["replyMessage"]["replyBy"],
-                  replyTo: i["replyMessage"]["replyTo"],
-                  voiceMessageDuration: null,
-                ),
-          messageType: getMessageType(i["messageType"]),
-        ));
-      }
-    });
+    var response =
+        await dio.get("${dotenv.get("baseUrl")}room/${widget.room_id}");
+
+    for (var i in response.data["data"]["messages"]) {
+      messages.add(Message(
+        id: i["id"],
+        createdAt: DateTime.fromMillisecondsSinceEpoch(
+            ((i["createdAt"]) as double).toInt()),
+        message: i["message"],
+        sendBy: i["sendBy"],
+        replyMessage: i["replyMessage"] == null
+            ? const ReplyMessage()
+            : ReplyMessage(
+                messageId: i["replyMessage"]["id"],
+                messageType: getMessageType(i["replyMessage"]["message_type"]),
+                message: i["replyMessage"]["message"],
+                replyBy: i["replyMessage"]["replyBy"],
+                replyTo: i["replyMessage"]["replyTo"],
+                voiceMessageDuration: null,
+              ),
+        messageType: getMessageType(i["messageType"]),
+      ));
+    }
+    return messages;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    SocketService.addListener(onMessage);
+  void getMsg() async {
+    Data.messageList[widget.room_id] = await getMessage();
+    _chatController.loadMoreData(Data.messageList[widget.room_id]!);
+
     _chatController.chatUsers = [
       for (var i in widget.room_members)
         ChatUser(
@@ -160,11 +128,15 @@ class _ChatScreenState extends State<ChatScreen> {
           profilePhoto: "",
         )
     ];
+    setState(() {});
+  }
 
-    setState(() {
-      getMessage();
-      Data.messageList[widget.room_id] = messages;
-    });
+  @override
+  void initState() {
+    super.initState();
+    SocketService.addListener(onMessage);
+
+    getMsg();
   }
 
   @override
@@ -205,7 +177,7 @@ class _ChatScreenState extends State<ChatScreen> {
             fontSize: 18,
             letterSpacing: 0.25,
           ),
-          userStatus: "online",
+          userStatus: "線上",
           userStatusTextStyle: const TextStyle(color: Colors.grey),
           actions: [
             IconButton(
@@ -218,7 +190,18 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
             IconButton(
-              onPressed: null,
+              onPressed: () {
+                showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    builder: (context) {
+                      return MembersModal(members: _chatController.chatUsers);
+                    }).then((value) => {
+                    });
+              },
               icon: Icon(
                 Icons.face,
                 color: theme.themeIconColor,
@@ -249,6 +232,7 @@ class _ChatScreenState extends State<ChatScreen> {
           textFieldBackgroundColor: theme.textFieldBackgroundColor,
           closeIconColor: theme.closeIconColor,
           textFieldConfig: TextFieldConfiguration(
+            hintText: "輸入訊息",
             textStyle: TextStyle(color: theme.textFieldTextColor),
           ),
           micIconColor: theme.replyMicIconColor,
@@ -316,7 +300,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 color: theme.inComingChatBubbleColor,
                 boxShadow: [
                   BoxShadow(
-                    color: isDarkTheme ? Colors.black12 : Colors.grey.shade200,
+                    color: isDarkTheme
+                        ? Color.fromARGB(5, 0, 0, 0)
+                        : Colors.grey.shade200,
                     offset: const Offset(0, 20),
                     blurRadius: 40,
                   )

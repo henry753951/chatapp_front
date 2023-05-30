@@ -18,8 +18,6 @@ import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 
-
-
 void main() async {
   SocketService.init();
   await Hive.initFlutter();
@@ -89,8 +87,10 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.orange,
-        ),
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSwatch(
+                backgroundColor: Colors.white, primarySwatch: Colors.orange),
+            dialogBackgroundColor: Colors.white),
         debugShowCheckedModeBanner: false,
         home: loading
             ? Scaffold(

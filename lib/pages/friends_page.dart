@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
+import 'package:flutter_custom_dialog/flutter_custom_dialog.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -43,8 +44,8 @@ class _FriendPageState extends State<FriendPage> {
       RefreshController(initialRefresh: false);
   late Future<List<User>> futureFriendsList = Future.value([]);
   Future<void> getFriends() async {
-    var auth_box = await Hive.openBox('auth');
-    var token = auth_box.get("token");
+    var authBox = await Hive.openBox('auth');
+    var token = authBox.get("token");
     Dio dio = Dio();
     dio.options.headers["authorization"] = "Bearer ${token}";
     Response response = await dio.get("${dotenv.get("baseUrl")}friend/friend");
@@ -71,8 +72,8 @@ class _FriendPageState extends State<FriendPage> {
   }
 
   void deleteFriend(String id) async {
-    var auth_box = await Hive.openBox('auth');
-    var token = auth_box.get("token");
+    var authBox = await Hive.openBox('auth');
+    var token = authBox.get("token");
     Dio dio = Dio();
     dio.options.headers["authorization"] = "Bearer ${token}";
     Response response =
@@ -85,16 +86,16 @@ class _FriendPageState extends State<FriendPage> {
 
   @override
   void MakeGroup(String groupname, List<User> ug) async {
-    List<String> uid_list = [];
+    List<String> uidList = [];
     for (User user in ug) {
-      uid_list.add(user.id);
+      uidList.add(user.id);
     }
-    var auth_box = await Hive.openBox('auth');
-    var token = auth_box.get("token");
+    var authBox = await Hive.openBox('auth');
+    var token = authBox.get("token");
     Dio dio = Dio();
     dio.options.headers["authorization"] = "Bearer ${token}";
     Response response = await dio.post("${dotenv.get("baseUrl")}room",
-        data: {"roomname": groupname, "memberIds": uid_list});
+        data: {"roomname": groupname, "memberIds": uidList});
 
     if (response.data["success"]) {
       getFriends();
@@ -235,17 +236,18 @@ class _FriendPageState extends State<FriendPage> {
 
   Future<dynamic> ShowNewMessage(BuildContext context, snapshot) {
     List<User> users = [];
-    List<User> UserGroup_clone = [];
+    List<User> usergroupClone = [];
     snapshot.then((value) {
       users = value;
       for (User user in value) {
-        UserGroup_clone.add(user);
+        usergroupClone.add(user);
       }
     });
     print(users);
 
-    String search_text = "";
+    String searchText = "";
     List<User> UserGroup = [];
+    String groupname = "";
     return showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -278,27 +280,27 @@ class _FriendPageState extends State<FriendPage> {
                             Flexible(
                               child: CupertinoTextField(
                                 onChanged: (value) {
-                                  search_text = value;
-                                  UserGroup_clone.clear();
-                                  print("搜尋馬:" + search_text);
+                                  searchText = value;
+                                  usergroupClone.clear();
+                                  print("搜尋馬:" + searchText);
                                   //print(users[0].name);
-                                  if (search_text.length == 0 ||
-                                      search_text == "[]") {
+                                  if (searchText.length == 0 ||
+                                      searchText == "[]") {
                                     for (User user in users) {
-                                      UserGroup_clone.add(user);
+                                      usergroupClone.add(user);
                                     }
                                   } else {
                                     for (User user in users) {
-                                      if (user.name.contains(search_text) ||
-                                          user.username.contains(search_text)) {
-                                        UserGroup_clone.add(user);
+                                      if (user.name.contains(searchText) ||
+                                          user.username.contains(searchText)) {
+                                        usergroupClone.add(user);
                                       }
                                     }
                                   }
                                   for (int n = 0;
-                                      n < UserGroup_clone.length;
+                                      n < usergroupClone.length;
                                       n++) {
-                                    print("成員:" + UserGroup_clone[n].name);
+                                    print("成員:" + usergroupClone[n].name);
                                   }
                                   setState() {}
                                   ;
@@ -317,10 +319,34 @@ class _FriendPageState extends State<FriendPage> {
                             GestureDetector(
                               onTap: () {
                                 // 下面建group
-                                if (UserGroup.length == 2) {
+                                if (UserGroup.length == 1) {
                                   MakeGroup("", UserGroup);
                                 } else {
-                                  MakeGroup("group", UserGroup);
+                                  showDialog<String>(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                      backgroundColor: Colors.white,
+                                      title: const Text('群組名稱'),
+                                      content: TextField(
+                                          onChanged: (value) =>
+                                              groupname = value),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, '取消'),
+                                          child: const Text('取消'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            MakeGroup(groupname, UserGroup);
+                                            Navigator.pop(context, '建立');
+                                          },
+                                          child: const Text('建立'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
                                 }
                               },
                               child: Container(
@@ -350,24 +376,23 @@ class _FriendPageState extends State<FriendPage> {
                         child: ListView.builder(
                             physics: BouncingScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: UserGroup_clone.length,
+                            itemCount: usergroupClone.length,
                             itemBuilder: (context, index) {
                               return Container(
-                                color:
-                                    UserGroup.contains(UserGroup_clone[index])
-                                        ? Colors.grey[100]
-                                        : Colors.white,
+                                color: UserGroup.contains(usergroupClone[index])
+                                    ? Colors.grey[100]
+                                    : Colors.white,
                                 child: ListTile(
                                   leading: CircleAvatar(
                                     backgroundImage: NetworkImage(
-                                        UserGroup_clone[index].avatar),
+                                        usergroupClone[index].avatar),
                                   ),
-                                  title: Text(UserGroup_clone[index].name),
+                                  title: Text(usergroupClone[index].name),
                                   subtitle:
-                                      Text(UserGroup_clone[index].username),
+                                      Text(usergroupClone[index].username),
                                   trailing: IconButton(
                                     icon: !UserGroup.contains(
-                                            UserGroup_clone[index])
+                                            usergroupClone[index])
                                         ? Icon(Icons.add)
                                         : Icon(Icons.remove),
                                     onPressed: () {

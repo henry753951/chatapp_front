@@ -5,7 +5,7 @@ class ChatUsers {
   String text;
   String secondaryText;
   String image;
-  String time;
+  DateTime time;
   String roomid;
   List<dynamic> room_members;
   ChatUsers(

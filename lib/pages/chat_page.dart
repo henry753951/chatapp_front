@@ -16,6 +16,24 @@ import 'package:intl/intl.dart';
 
 import 'package:chatapp/models/InviteModal.dart';
 
+String getTimeStamp(DateTime time) {
+  var now = DateTime.now();
+  var diff = now.difference(time);
+  if (diff.inSeconds < 60) {
+    return "現在";
+  } else if (diff.inMinutes < 60) {
+    return "${diff.inMinutes}分鐘前";
+  } else if (diff.inHours < 24) {
+    return "${diff.inHours}小時前";
+  } else if (diff.inDays < 7) {
+    return "${diff.inDays}天前";
+  } else {
+    return DateFormat("yyyy-MM-dd").format(time);
+  }
+
+}
+
+
 class ChatPage extends StatefulWidget {
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -125,8 +143,12 @@ class _ChatPageState extends State<ChatPage> {
           secondaryText:
               messages.isEmpty ? '跟新朋友打聲招呼吧!' : messages.last["message"],
           image: "images/userImage1.jpeg",
-          time: "Now"));
+          time: messages.isEmpty
+              ? DateTime.now()
+              : DateTime.fromMillisecondsSinceEpoch(
+                  (messages.last["createdAt"] as double).toInt())));
     }
+    chatUsers.sort((a, b) => b.time.compareTo(a.time));
     return chatUsers;
   }
 
@@ -259,12 +281,12 @@ class _ChatPageState extends State<ChatPage> {
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 return ChatUsersList(
-                  roomid: chatUsers_clone[index].roomid,
-                  room_members: chatUsers_clone[index].room_members,
-                  text: chatUsers_clone[index].text,
-                  secondaryText: chatUsers_clone[index].secondaryText,
-                  image: chatUsers_clone[index].image,
-                  time: chatUsers_clone[index].time,
+                  roomid: Data.chatUsers[index].roomid,
+                  room_members: Data.chatUsers[index].room_members,
+                  text: Data.chatUsers[index].text,
+                  secondaryText: Data.chatUsers[index].secondaryText,
+                  image: Data.chatUsers[index].image,
+                  time: getTimeStamp(Data.chatUsers[index].time),
                   isMessageRead: (index == 0 || index == 3) ? true : false,
                 );
               },
