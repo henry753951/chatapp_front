@@ -14,7 +14,7 @@ class SocketService {
   static void init() {
     stompClient = StompClient(
       config: StompConfig(
-        url: 'ws://192.168.0.131:8080/ws-message',
+        url: 'ws://${dotenv.get("baseUrl").split('//')[1]}ws-message',
         onConnect: onConnect,
         beforeConnect: () async {
           print('waiting to connect...');
