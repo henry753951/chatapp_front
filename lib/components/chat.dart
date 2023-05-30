@@ -26,7 +26,7 @@ class _ChatUsersListState extends State<ChatUsersList> {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, CupertinoPageRoute(builder: (context) {
-          return ChatScreen(name: widget.text);
+          return ChatScreen(name: widget.text, id: widget.id);
         }));
       },
       child: Container(
