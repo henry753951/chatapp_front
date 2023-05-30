@@ -47,7 +47,7 @@ class _ChatScreenState extends State<ChatScreen> {
   bool isDarkTheme = false;
 
   late ChatUser currentUser =
-      ChatUser(name: widget.name, id: widget.id, profilePhoto: "");
+      ChatUser(name: widget.name, id: widget.room_id, profilePhoto: "");
   final ChatController _chatController = ChatController(
     initialMessageList: Data.messageList,
     scrollController: ScrollController(),
@@ -332,7 +332,7 @@ class _ChatScreenState extends State<ChatScreen> {
     };
     SocketService.stompClient.send(
         destination: "/app/chat",
-        body: json.encode({"roomid": widget.id, "message": toServer}));
+        body: json.encode({"roomid": widget.room_id, "message": toServer}));
   }
 
   void _onThemeIconTap() {
