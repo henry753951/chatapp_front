@@ -14,6 +14,7 @@ import 'package:chatview/chatview.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 import 'package:chatapp/pages/friends_page.dart';
+import 'package:uuid/uuid.dart';
 
 MessageType getMessageType(String text) {
   switch (text) {
@@ -48,8 +49,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   late ChatUser currentUser =
       ChatUser(name: widget.name, id: Data.currentUser["id"], profilePhoto: "");
-  final ChatController _chatController = ChatController(
-    initialMessageList: [],
+  late ChatController _chatController = ChatController(
+    initialMessageList: Data.messageList[widget.room_id] ?? [],
     scrollController: ScrollController(),
     chatUsers: [],
   );
@@ -87,14 +88,14 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void onMessage(value_) {
-    if(value_['room_id'] != widget.room_id) return;
+    if (value_['room_id'] != widget.room_id) return;
     var value = value_['message'];
     MessageType messageType = getMessageType(value['messageType']);
     MessageType replyMessageType =
         getMessageType(value['replyMessage']['message_type']);
 
     Message msg = Message(
-      id: Data.messageList.isEmpty ? '0' : (int.parse(Data.messageList.last.id) + 1).toString(),
+      id: value['id'],
       createdAt: DateTime.fromMillisecondsSinceEpoch(
           (value['createdAt'] as double).toInt()),
       message: value['message'],
@@ -114,6 +115,39 @@ class _ChatScreenState extends State<ChatScreen> {
     _chatController.addMessage(msg);
   }
 
+  List<Message> messages = [];
+  void getMessage() async {
+    var auth_box = Hive.box('auth');
+    var token = auth_box.get("token");
+    Dio dio = Dio();
+
+    dio.options.headers["authorization"] = "Bearer ${token}";
+    dio.get("${dotenv.get("baseUrl")}room/${widget.room_id}").then((value) {
+      var data = value.data["data"];
+      for (var i in data["messages"]) {
+        messages.add(Message(
+          id: i["id"],
+          createdAt: DateTime.fromMillisecondsSinceEpoch(
+              ((i["createdAt"]) as double).toInt()),
+          message: i["message"],
+          sendBy: i["sendBy"],
+          replyMessage: i["replyMessage"] == null
+              ? const ReplyMessage()
+              : ReplyMessage(
+                  messageId: i["replyMessage"]["id"],
+                  messageType:
+                      getMessageType(i["replyMessage"]["message_type"]),
+                  message: i["replyMessage"]["message"],
+                  replyBy: i["replyMessage"]["replyBy"],
+                  replyTo: i["replyMessage"]["replyTo"],
+                  voiceMessageDuration: null,
+                ),
+          messageType: getMessageType(i["messageType"]),
+        ));
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -126,6 +160,11 @@ class _ChatScreenState extends State<ChatScreen> {
           profilePhoto: "",
         )
     ];
+
+    setState(() {
+      getMessage();
+      Data.messageList[widget.room_id] = messages;
+    });
   }
 
   @override
@@ -323,8 +362,8 @@ class _ChatScreenState extends State<ChatScreen> {
     ReplyMessage replyMessage,
     MessageType messageType,
   ) {
-
     var toServer = {
+      "id": const Uuid().v4(),
       "message": message,
       "sendBy": currentUser.id,
       "messageType": messageType.toString(),

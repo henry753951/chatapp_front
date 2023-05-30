@@ -316,7 +316,7 @@ class _FriendPageState extends State<FriendPage> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                //下面建group
+                                // 下面建group
                                 if (UserGroup.length == 2) {
                                   MakeGroup("", UserGroup);
                                 } else {

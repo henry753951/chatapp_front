@@ -1,9 +1,11 @@
 import 'dart:math';
 
+import 'package:avoid_keyboard/avoid_keyboard.dart';
 import 'package:chatapp/components/dialog.dart';
 import 'package:chatapp/pages/main_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:hive/hive.dart';
 import 'auth/login.dart';
 import 'package:flutter_custom_dialog/flutter_custom_dialog.dart';
@@ -52,135 +54,139 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     YYDialog.init(context);
-    return SafeArea(
-        child: Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
+    return Scaffold(
+      body: SafeArea(
           child: Column(
-            children: [
-              Row(
-                children: [
-                  Text("個人檔案",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        foreground: Paint()
-                          ..shader = const LinearGradient(
-                            colors: [Colors.red, Colors.orange],
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                          ).createShader(
-                              const Rect.fromLTWH(0.0, 0.0, 80.0, 70.0)),
-                      )),
-                ],
-              ),
-              SizedBox(
-                height: 25,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: Stack(clipBehavior: Clip.none, children: [
-                  CircleAvatar(
-                    radius: 50.0,
-                    backgroundColor: Color.fromARGB(255, 226, 235, 113),
-                  ),
-                  Positioned(
-                    right: -5,
-                    bottom: -5,
-                    child: Container(
-                        child: IconButton(
-                      icon: Icon(Icons.camera_alt),
-                      onPressed: () => {
-                        YYDialog().build()
-                          ..width = 240
-                          ..height = 180
-                          ..borderRadius = 10.0
-                          ..widget(
-                            Padding(
-                              padding: EdgeInsets.all(35),
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Column(
-                                  children: [
-                                    TextButton(
-                                      style: TextButton.styleFrom(
-                                        textStyle:
-                                            const TextStyle(fontSize: 20),
-                                        padding: const EdgeInsets.all(10.0),
-                                      ),
-                                      onPressed: () {
-                                        getImage(ImageSource.camera);
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text("拍照"),
-                                    ),
-                                    ClipRRect(
-                                      child: TextButton(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Text("個人檔案",
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          foreground: Paint()
+                            ..shader = const LinearGradient(
+                              colors: [Colors.red, Colors.orange],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ).createShader(
+                                const Rect.fromLTWH(0.0, 0.0, 80.0, 70.0)),
+                        )),
+                  ],
+                ),
+                SizedBox(
+                  height: 25,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: Stack(clipBehavior: Clip.none, children: [
+                    CircleAvatar(
+                      radius: 50.0,
+                      backgroundColor: Color.fromARGB(255, 226, 235, 113),
+                    ),
+                    Positioned(
+                      right: -5,
+                      bottom: -5,
+                      child: Container(
+                          child: IconButton(
+                        icon: Icon(Icons.camera_alt),
+                        onPressed: () => {
+                          YYDialog().build()
+                            ..width = 240
+                            ..height = 180
+                            ..borderRadius = 10.0
+                            ..widget(
+                              Padding(
+                                padding: EdgeInsets.all(35),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Column(
+                                    children: [
+                                      TextButton(
                                         style: TextButton.styleFrom(
                                           textStyle:
                                               const TextStyle(fontSize: 20),
                                           padding: const EdgeInsets.all(10.0),
                                         ),
                                         onPressed: () {
-                                          getImage(ImageSource.gallery);
+                                          getImage(ImageSource.camera);
                                           Navigator.pop(context);
                                         },
-                                        child: Text("從相簿選擇"),
+                                        child: Text("拍照"),
                                       ),
-                                    ),
-                                  ],
+                                      ClipRRect(
+                                        child: TextButton(
+                                          style: TextButton.styleFrom(
+                                            textStyle:
+                                                const TextStyle(fontSize: 20),
+                                            padding:
+                                                const EdgeInsets.all(10.0),
+                                          ),
+                                          onPressed: () {
+                                            getImage(ImageSource.gallery);
+                                            Navigator.pop(context);
+
+                                          },
+                                          child: Text("從相簿選擇"),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          )
-                          ..show()
-                      },
+                            )
+                            ..show()
+                        },
+                      )),
+                    )
+                  ]),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(user.name,
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 75, 75, 75),
                     )),
-                  )
-                ]),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(user.name,
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 75, 75, 75),
-                  )),
-              const SizedBox(
-                height: 35,
-              ),
-              info(
-                icon: Icon(CupertinoIcons.creditcard, color: Colors.orange),
-                title: "學號",
-                value: user.username,
-              ),
-              Row(
-                children: [
-                  info(
-                    icon: Icon(Icons.cake_outlined, color: Colors.orange),
-                    title: "生日",
-                    value: "07/14",
-                  )
-                ],
-              ),
-              info(
-                icon: Icon(CupertinoIcons.phone, color: Colors.orange),
-                title: "手機號碼",
-                value: "0965494854",
-              ),
-            ],
+                const SizedBox(
+                  height: 35,
+                ),
+                info(
+                  icon: Icon(CupertinoIcons.creditcard, color: Colors.orange),
+                  title: "學號",
+                  value: user.username,
+                ),
+                Row(
+                  children: [
+                    info(
+                      icon: Icon(Icons.cake_outlined, color: Colors.orange),
+                      title: "生日",
+                      value: "07/14",
+                    )
+                  ],
+                ),
+                info(
+                  icon: Icon(CupertinoIcons.phone, color: Colors.orange),
+                  title: "手機號碼",
+                  value: "0965494854",
+                ),
+              ],
+            ),
           ),
-        ),
-        const Spacer(),
-        LogoutBtn(),
-        const SizedBox(
-          height: 35,
-        ),
-      ],
-    ));
+          const Spacer(),
+          LogoutBtn(),
+          const SizedBox(
+            height: 35,
+          ),
+        ],
+      )),
+    );
   }
 }
 
@@ -202,22 +208,24 @@ class LogoutBtn extends StatelessWidget {
             end: Alignment.centerRight,
           )),
       child: Center(
-        child: TextButton(
-          onPressed: () {
-            Hive.box('auth').delete("token");
-            Hive.box('auth').delete("user");
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const LoginScreen(),
-              ),
-              (Route<dynamic> route) => false,
-            );
-          },
-          child: Text(
-            "登出",
-            style: TextStyle(
-                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+        child: SingleChildScrollView(
+          child: TextButton(
+            onPressed: () {
+              Hive.box('auth').delete("token");
+              Hive.box('auth').delete("user");
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LoginScreen(),
+                ),
+                (Route<dynamic> route) => false,
+              );
+            },
+            child: Text(
+              "登出",
+              style: TextStyle(
+                  color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+            ),
           ),
         ),
       ),
@@ -276,7 +284,48 @@ class info extends StatelessWidget {
                   Expanded(child: SizedBox(), flex: 1),
                   TextButton(
                       onPressed: () {
-                        //YYDialogDemo(context,);
+                        YYDialog().build()
+                          ..width = 240
+                          ..height = 130
+                          ..borderRadius = 10.0
+                          ..widget(
+                            Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      TextField(
+                                        onChanged: (text) {
+                                          value = text;
+                                        },
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          labelText: '請輸入新的手機號碼',
+                                        ),
+                                      ),
+                                      Container(
+                                        alignment: Alignment.centerRight,
+                                        child: TextButton(
+                                          style: TextButton.styleFrom(
+                                            textStyle:
+                                                const TextStyle(fontSize: 20),
+                                          ),
+                                          onPressed: () {
+                                            ChangValue();
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("修改"),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                          ..show();
                       },
                       child: Text(
                         value,
@@ -288,3 +337,43 @@ class info extends StatelessWidget {
         ));
   }
 }
+// YYDialog().build()
+                        //   ..width = 240
+                        //   ..height = 130
+                        //   ..borderRadius = 10.0
+                        //   ..widget(
+                        //     Padding(
+                        //       padding: EdgeInsets.all(10),
+                        //       child: Align(
+                        //         alignment: Alignment.bottomCenter,
+                        //         child: Column(
+                        //           children: [
+                        //             TextField(
+                        //               onChanged: (text) {
+                        //                 value = text;
+                        //               },
+                        //               decoration: InputDecoration(
+                        //                 border: OutlineInputBorder(),
+                        //                 labelText: '請輸入新的手機號碼',
+                        //               ),
+                        //             ),
+                        //             Container(
+                        //               alignment: Alignment.centerRight,
+                        //               child: TextButton(
+                        //                 style: TextButton.styleFrom(
+                        //                   textStyle:
+                        //                       const TextStyle(fontSize: 20),
+                        //                 ),
+                        //                 onPressed: () {
+                        //                   ChangValue();
+                        //                   Navigator.pop(context);
+                        //                 },
+                        //                 child: Text("修改"),
+                        //               ),
+                        //             ),
+                        //           ],
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   )
+                        //   ..show();
