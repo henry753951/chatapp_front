@@ -113,7 +113,7 @@ class _ChatPageState extends State<ChatPage> {
         }
       }
       chatUsers.add(ChatUsers(
-          text: i["roomName"],
+          text: i["roomname"],
           secondaryText: "Awesome Setup",
           image: "images/userImage1.jpeg",
           time: "Now"));

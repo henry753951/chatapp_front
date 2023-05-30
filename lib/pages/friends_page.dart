@@ -87,17 +87,18 @@ class _FriendPageState extends State<FriendPage> {
   void MakeGroup(String groupname, List<User> ug) async {
     List<String> uid_list = [];
     for (User user in ug) {
-      uid_list.add(user.username);
+      uid_list.add(user.id);
     }
     var auth_box = await Hive.openBox('auth');
     var token = auth_box.get("token");
     Dio dio = Dio();
     dio.options.headers["authorization"] = "Bearer ${token}";
-    Response response = await dio.post("${dotenv.get("baseUrl")}room/room",
+    Response response = await dio.post("${dotenv.get("baseUrl")}room",
         data: {"roomname": groupname, "memberIds": uid_list});
 
     if (response.data["success"]) {
       getFriends();
+      Navigator.pop(context);
     }
   }
 
@@ -237,7 +238,7 @@ class _FriendPageState extends State<FriendPage> {
       users = value;
     });
     print(users);
-    
+
     List<User> UserGroup = [];
     return showModalBottomSheet(
         context: context,
