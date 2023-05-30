@@ -36,6 +36,8 @@ class ChatScreen extends StatefulWidget {
       required this.room_members})
       : super(key: key);
   final String name;
+  final String room_id;
+  final List<dynamic> room_members;
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
