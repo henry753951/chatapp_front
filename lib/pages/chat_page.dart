@@ -23,6 +23,9 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   int InviteLength = 0;
+  String searchText = "";
+  List<ChatUsers> chatUsers = [];
+  List<ChatUsers> chatUsers_clone = [];
   @override
   void initState() {
     super.initState();
@@ -34,6 +37,9 @@ class _ChatPageState extends State<ChatPage> {
       getChatUsers().then((value) {
         setState(() {
           Data.chatUsers = value;
+          for (ChatUsers c in chatUsers) {
+            chatUsers_clone.add(c);
+          }
         });
       });
     });
@@ -102,7 +108,7 @@ class _ChatPageState extends State<ChatPage> {
     dio.options.headers["authorization"] = "Bearer ${token}";
     Response response = await dio.get("${dotenv.get("baseUrl")}room");
     var data = response.data;
-    List<ChatUsers> chatUsers = [];
+    chatUsers = [];
     for (var i in data["data"]) {
       if (i["members"].length == 2) {
         if (i["members"][0]["user"]["Name"] == auth_box.get("user")["Name"]) {
@@ -224,7 +230,21 @@ class _ChatPageState extends State<ChatPage> {
           Padding(
               padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 8),
               child: CupertinoSearchTextField(
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    searchText = value;
+                    chatUsers_clone.clear();
+                    if (searchText.length == 0) {
+                      for (ChatUsers c in chatUsers) {
+                        chatUsers_clone.add(c);
+                      }
+                    } else {
+                      for (ChatUsers c in chatUsers) {
+                        if (c.text.contains(searchText)) {
+                          chatUsers_clone.add(c);
+                        }
+                      }
+                    }
+                  },
                   placeholder: "搜尋",
                   placeholderStyle: TextStyle(
                     fontSize: 14.0,
@@ -234,17 +254,17 @@ class _ChatPageState extends State<ChatPage> {
                       left: Radius.circular(50), right: Radius.circular(50)))),
           Expanded(
             child: ListView.builder(
-              itemCount: Data.chatUsers.length,
+              itemCount: chatUsers_clone.length,
               padding: const EdgeInsets.only(top: 16),
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 return ChatUsersList(
-                  roomid: Data.chatUsers[index].roomid,
-                  room_members: Data.chatUsers[index].room_members,
-                  text: Data.chatUsers[index].text,
-                  secondaryText: Data.chatUsers[index].secondaryText,
-                  image: Data.chatUsers[index].image,
-                  time: Data.chatUsers[index].time,
+                  roomid: chatUsers_clone[index].roomid,
+                  room_members: chatUsers_clone[index].room_members,
+                  text: chatUsers_clone[index].text,
+                  secondaryText: chatUsers_clone[index].secondaryText,
+                  image: chatUsers_clone[index].image,
+                  time: chatUsers_clone[index].time,
                   isMessageRead: (index == 0 || index == 3) ? true : false,
                 );
               },
