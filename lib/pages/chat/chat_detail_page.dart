@@ -35,8 +35,8 @@ class _ChatScreenState extends State<ChatScreen> {
   AppTheme theme = LightTheme();
   bool isDarkTheme = false;
   final currentUser = ChatUser(
-    id: '1',
-    name: 'Flutter',
+    id: '1', // pass your user id
+    name: 'Flutter', // pass your name
     profilePhoto: Data.profileImage,
   );
   final _chatController = ChatController(
@@ -50,6 +50,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     ],
   );
+
   void onMessage(value) {
     print(value);
     MessageType messageType = getMessageType(value['messageType']);
