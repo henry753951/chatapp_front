@@ -15,6 +15,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 import 'package:chatapp/pages/friends_page.dart';
 import 'package:uuid/uuid.dart';
+import 'package:chatapp/models/groupmembers.dart';
 
 MessageType getMessageType(String text) {
   switch (text) {
@@ -380,6 +381,20 @@ class _ChatScreenState extends State<ChatScreen> {
     SocketService.stompClient.send(
         destination: "/app/chat",
         body: json.encode({"room_id": widget.room_id, "message": toServer}));
+  }
+
+  Future<void> showModal() async {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        builder: (context) {
+          return MembersModal();
+        }).then((value) => {
+          // 當modal關閉後，重新取得邀請數量
+        });
   }
 
   void _onThemeIconTap() {
