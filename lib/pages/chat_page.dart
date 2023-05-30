@@ -94,10 +94,13 @@ class _ChatPageState extends State<ChatPage> {
           i["roomname"] = i["members"][0]["user"]["Name"];
         }
       }
+      print(i["members"]);
       chatUsers.add(ChatUsers(
-          id: i["id"],
+          room_members: i["members"],
+          roomid: i["id"],
           text: i["roomname"],
-          secondaryText: "Awesome Setup",
+          secondaryText:
+              i["messages"].length == 0 ? '跟新朋友打聲招呼吧!' : i["messages"][-1],
           image: "images/userImage1.jpeg",
           time: "Now"));
     }
@@ -218,7 +221,8 @@ class _ChatPageState extends State<ChatPage> {
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 return ChatUsersList(
-                  id: Data.chatUsers[index].id,
+                  roomid: Data.chatUsers[index].roomid,
+                  room_members: Data.chatUsers[index].room_members,
                   text: Data.chatUsers[index].text,
                   secondaryText: Data.chatUsers[index].secondaryText,
                   image: Data.chatUsers[index].image,

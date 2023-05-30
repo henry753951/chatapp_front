@@ -13,6 +13,7 @@ import 'package:chatapp/components/data.dart';
 import 'package:chatview/chatview.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
+import 'package:chatapp/pages/friends_page.dart';
 
 MessageType getMessageType(String text) {
   switch (text) {
@@ -28,10 +29,15 @@ MessageType getMessageType(String text) {
 }
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key, required this.name, required this.id})
+  const ChatScreen(
+      {Key? key,
+      required this.name,
+      required this.room_id,
+      required this.room_members})
       : super(key: key);
   final String name;
-  final String id;
+  final String room_id;
+  final List<dynamic> room_members;
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }

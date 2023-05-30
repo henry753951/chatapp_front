@@ -1,16 +1,19 @@
 import 'package:chatapp/pages/chat/chat_detail_page.dart';
+import 'package:chatapp/pages/friends_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ChatUsersList extends StatefulWidget {
   String text;
-  String id;
+  String roomid;
+  List<dynamic> room_members;
   String secondaryText;
   String image;
   String time;
   bool isMessageRead;
   ChatUsersList(
-      {required this.id,
+      {required this.roomid,
+      required this.room_members,
       required this.text,
       required this.secondaryText,
       required this.image,
@@ -26,7 +29,10 @@ class _ChatUsersListState extends State<ChatUsersList> {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, CupertinoPageRoute(builder: (context) {
-          return ChatScreen(name: widget.text, id: widget.id);
+          return ChatScreen(
+              name: widget.text,
+              room_id: widget.roomid,
+              room_members: widget.room_members);
         }));
       },
       child: Container(
