@@ -16,6 +16,8 @@ import 'package:intl/intl.dart';
 
 import 'package:chatapp/models/InviteModal.dart';
 
+import '../components/GradientText.dart';
+
 String getTimeStamp(DateTime time) {
   var now = DateTime.now();
   var diff = now.difference(time);
@@ -30,9 +32,7 @@ String getTimeStamp(DateTime time) {
   } else {
     return DateFormat("yyyy-MM-dd").format(time);
   }
-
 }
-
 
 class ChatPage extends StatefulWidget {
   @override
@@ -164,18 +164,14 @@ class _ChatPageState extends State<ChatPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text("Tinder",
-                      style: TextStyle(
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold,
-                        foreground: Paint()
-                          ..shader = const LinearGradient(
-                            colors: [Colors.red, Colors.orange],
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                          ).createShader(
-                              const Rect.fromLTWH(0.0, 0.0, 80.0, 70.0)),
-                      )),
+                  GradientText(
+                    'MDFKU', // MY DEAR FRIEND in Kushong University
+                    style: const TextStyle(fontSize: 35,fontWeight: FontWeight.bold),
+                    gradient: LinearGradient(colors: [
+                      Color.fromARGB(226, 252, 78, 72),
+                      Color.fromARGB(255, 221, 164, 42),
+                    ]),
+                  ),
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
@@ -287,7 +283,7 @@ class _ChatPageState extends State<ChatPage> {
                   secondaryText: Data.chatUsers[index].secondaryText,
                   image: Data.chatUsers[index].image,
                   time: getTimeStamp(Data.chatUsers[index].time),
-                  isMessageRead: (index == 0 || index == 3) ? true : false,
+                  isMessageRead: true,
                 );
               },
             ),

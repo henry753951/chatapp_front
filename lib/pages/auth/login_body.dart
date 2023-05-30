@@ -11,6 +11,8 @@ import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import 'package:m_toast/m_toast.dart';
 
+import '../../components/GradientText.dart';
+import '../../components/data.dart';
 import '../main_page.dart';
 
 class LoginBodyScreen extends StatefulWidget {
@@ -47,6 +49,9 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
       if (data["msg"] == "成功登入") {
         await authBox.put("token", data["data"]["token"]);
         await authBox.put("user", data["data"]["user"]);
+        var payload = parseJwt(data["data"]["token"]);
+        Data.currentUser['id'] = payload["id"];
+
         if (parseJwt(data["data"]["token"])["active"]) {
           Navigator.pushAndRemoveUntil(
             context,
@@ -60,7 +65,10 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => VerificationCodeScreen(resend: false, email: authBox.get("user")['email'],),
+            builder: (context) => VerificationCodeScreen(
+              resend: false,
+              email: authBox.get("user")['email'],
+            ),
           ),
           (Route<dynamic> route) => false,
         );
@@ -125,17 +133,15 @@ class _LoginBodyScreenState extends State<LoginBodyScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text("ININDER",
-                          style: TextStyle(
-                            fontSize: 66,
-                            fontWeight: FontWeight.bold,
-                            foreground: Paint()
-                              ..shader = const LinearGradient(
-                                colors: [Colors.red, Colors.orange],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ).createShader(Rect.fromLTWH(0, 0, 80, 70)),
-                          )),
+                      GradientText(
+                        'MDFKU', // MY DEAR FRIEND in Kushong University
+                        style: const TextStyle(
+                            fontSize: 50, fontWeight: FontWeight.bold),
+                        gradient: LinearGradient(colors: [
+                          Color.fromARGB(226, 252, 78, 72),
+                          Color.fromARGB(255, 221, 164, 42),
+                        ]),
+                      ),
                     ],
                   ),
                 ),

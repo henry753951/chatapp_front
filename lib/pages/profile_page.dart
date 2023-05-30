@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
+import '../components/GradientText.dart';
 import 'auth/login.dart';
 import 'package:flutter_custom_dialog/flutter_custom_dialog.dart';
 import 'package:image_picker/image_picker.dart';
@@ -77,18 +78,15 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 Row(
                   children: [
-                    Text("個人檔案",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          foreground: Paint()
-                            ..shader = const LinearGradient(
-                              colors: [Colors.red, Colors.orange],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                            ).createShader(
-                                const Rect.fromLTWH(0.0, 0.0, 80.0, 70.0)),
-                        )),
+                    GradientText(
+                      '個人檔案', // MY DEAR FRIEND in Kushong University
+                      style: const TextStyle(
+                          fontSize: 30, fontWeight: FontWeight.bold),
+                      gradient: LinearGradient(colors: [
+                        Color.fromARGB(226, 252, 78, 72),
+                        Color.fromARGB(255, 221, 164, 42),
+                      ]),
+                    ),
                   ],
                 ),
                 SizedBox(
