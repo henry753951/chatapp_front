@@ -204,9 +204,10 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ),
           ),
-          const Padding(
+          Padding(
               padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 8),
               child: CupertinoSearchTextField(
+                  onChanged: (value) {},
                   placeholder: "搜尋",
                   placeholderStyle: TextStyle(
                     fontSize: 14.0,
