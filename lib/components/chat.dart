@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 
 class ChatUsersList extends StatefulWidget {
   String text;
+  String id;
   String secondaryText;
   String image;
   String time;
   bool isMessageRead;
   ChatUsersList(
-      {required this.text,
+      {required this.id,
+      required this.text,
       required this.secondaryText,
       required this.image,
       required this.time,

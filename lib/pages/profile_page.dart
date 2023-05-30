@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'auth/login.dart';
 import 'package:flutter_custom_dialog/flutter_custom_dialog.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -66,16 +67,15 @@ class _ProfilePageState extends State<ProfilePage> {
                   backgroundColor: Color.fromARGB(255, 226, 235, 113),
                 ),
                 Positioned(
-                  right: 0,
-                  bottom: 0,
+                  right: 22,
+                  bottom: 18,
                   child: Container(
-                    height: 30,
-                    width: 30,
-                    decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 67, 190, 72),
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 3.0)),
-                  ),
+                      height: 10,
+                      width: 10,
+                      child: Icon(
+                          IconData(0xe04f, fontFamily: 'MaterialIcons'),
+                          size: 33,
+                          color: Colors.orange)),
                 )
               ]),
               const SizedBox(
@@ -164,9 +164,7 @@ class LogoutBtn extends StatelessWidget {
 }
 
 class info extends StatelessWidget {
-  ChangValue(){
-
-  }
+  ChangValue() {}
   Icon icon;
   String title;
   String value;
@@ -228,4 +226,3 @@ class info extends StatelessWidget {
         ));
   }
 }
-
