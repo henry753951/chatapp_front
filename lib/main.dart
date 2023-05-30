@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pinput/pinput.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'components/GradientText.dart';
 import 'components/data.dart';
 import 'modules/utils.dart';
 import 'package:chatapp/pages/auth/login.dart';
@@ -85,7 +86,7 @@ class _MyAppState extends State<MyApp> {
             Brightness.dark, //navigation bar icons' color
       ),
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'MDFKU',
         theme: ThemeData(
             useMaterial3: true,
             colorScheme: ColorScheme.fromSwatch(
@@ -95,17 +96,15 @@ class _MyAppState extends State<MyApp> {
         home: loading
             ? Scaffold(
                 body: Center(
-                    child: Text("Tinder",
-                        style: TextStyle(
-                          fontSize: 58,
-                          fontWeight: FontWeight.bold,
-                          foreground: Paint()
-                            ..shader = const LinearGradient(
-                              colors: [Colors.red, Colors.orange],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                            ).createShader(Rect.fromLTWH(0, 0, 280, 80)),
-                        ))),
+                  child: GradientText(
+                    'ININDER',
+                    style: const TextStyle(fontSize: 40),
+                    gradient: LinearGradient(colors: [
+                      Color.fromARGB(226, 252, 78, 72),
+                      Color.fromARGB(255, 221, 164, 42),
+                    ]),
+                  ),
+                ),
               )
             : (logined
                 ? (active

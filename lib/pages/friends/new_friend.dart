@@ -64,7 +64,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
                 children: [
                   SizedBox(height: 30),
                   Text(
-                    "在 ININDER 上面尋找你的朋友",
+                    "在 MDFKU 上面尋找你的朋友",
                     style: GoogleFonts.notoSans(
                         fontSize: 23, fontWeight: FontWeight.w600),
                   ),
