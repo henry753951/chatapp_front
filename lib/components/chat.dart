@@ -3,6 +3,8 @@ import 'package:chatapp/pages/friends_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'data.dart';
+
 class ChatUsersList extends StatefulWidget {
   String text;
   String roomid;
@@ -28,6 +30,10 @@ class _ChatUsersListState extends State<ChatUsersList> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        if (Data.messageList[widget.roomid] == null) {
+          Data.messageList[widget.roomid] = [];
+        }
+
         Navigator.push(context, CupertinoPageRoute(builder: (context) {
           return ChatScreen(
               name: widget.text,

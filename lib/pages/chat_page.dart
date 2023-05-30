@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:chatapp/components/chat.dart';
 import 'package:chatapp/components/data.dart';
 import 'package:chatapp/models/chat_users.dart';
 import 'package:chatapp/modules/dragbar.dart';
+import 'package:chatapp/services/socket.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -23,6 +26,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
+    SocketService.addListener(onMessage);
     getInvite().then((value) {
       setState(() {
         InviteLength = value.length;
@@ -31,6 +35,20 @@ class _ChatPageState extends State<ChatPage> {
         setState(() {
           Data.chatUsers = value;
         });
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    SocketService.removeListener(onMessage);
+  }
+
+  void onMessage(value) {
+    getChatUsers().then((value) {
+      setState(() {
+        Data.chatUsers = value;
       });
     });
   }
@@ -84,7 +102,6 @@ class _ChatPageState extends State<ChatPage> {
     dio.options.headers["authorization"] = "Bearer ${token}";
     Response response = await dio.get("${dotenv.get("baseUrl")}room");
     var data = response.data;
-    print(data);
     List<ChatUsers> chatUsers = [];
     for (var i in data["data"]) {
       if (i["members"].length == 2) {
@@ -94,13 +111,13 @@ class _ChatPageState extends State<ChatPage> {
           i["roomname"] = i["members"][0]["user"]["Name"];
         }
       }
-      print(i["members"]);
+      List<dynamic> messages = i["messages"];
       chatUsers.add(ChatUsers(
           room_members: i["members"],
           roomid: i["id"],
           text: i["roomname"],
           secondaryText:
-              i["messages"].length == 0 ? '跟新朋友打聲招呼吧!' : i["messages"][-1],
+              messages.isEmpty ? '跟新朋友打聲招呼吧!' : messages.last["message"],
           image: "images/userImage1.jpeg",
           time: "Now"));
     }
