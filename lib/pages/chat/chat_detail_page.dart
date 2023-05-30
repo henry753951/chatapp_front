@@ -46,22 +46,14 @@ class _ChatScreenState extends State<ChatScreen> {
   AppTheme theme = LightTheme();
   bool isDarkTheme = false;
 
-  final currentUser = ChatUser(
-    id: '1', // pass your user id
-    name: 'Flutter', // pass your name
-    profilePhoto: Data.profileImage,
-  );
-  final _chatController = ChatController(
+  late ChatUser currentUser =
+      ChatUser(name: widget.name, id: widget.room_id, profilePhoto: "");
+  final ChatController _chatController = ChatController(
     initialMessageList: Data.messageList,
     scrollController: ScrollController(),
-    chatUsers: [
-      ChatUser(
-        id: '2',
-        name: 'Simform',
-        profilePhoto: Data.profileImage,
-      ),
-    ],
+    chatUsers: [],
   );
+
   Future<List<Message>> getmessage() async {
     var auth_box = await Hive.openBox('auth');
     var token = auth_box.get("token");
@@ -96,6 +88,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void onMessage(value) {
     print(value);
+
     MessageType messageType = getMessageType(value['messageType']);
     MessageType replyMessageType =
         getMessageType(value['replyMessage']['message_type']);
@@ -322,7 +315,6 @@ class _ChatScreenState extends State<ChatScreen> {
     ReplyMessage replyMessage,
     MessageType messageType,
   ) {
-    final id = int.parse(Data.messageList.last.id) + 1;
 
     var toServer = {
       "message": message,
@@ -338,8 +330,9 @@ class _ChatScreenState extends State<ChatScreen> {
       },
       "createdAt": DateTime.now().millisecondsSinceEpoch,
     };
-    SocketService.stompClient
-        .send(destination: "/app/chat", body: json.encode(toServer));
+    SocketService.stompClient.send(
+        destination: "/app/chat",
+        body: json.encode({"roomid": widget.room_id, "message": toServer}));
   }
 
   void _onThemeIconTap() {

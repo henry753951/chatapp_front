@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chatapp/components/dialog.dart';
 import 'package:chatapp/pages/main_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'auth/login.dart';
 import 'package:flutter_custom_dialog/flutter_custom_dialog.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_custom_dialog/flutter_custom_dialog.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -27,6 +30,19 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  XFile? image;
+
+  final ImagePicker picker = ImagePicker();
+
+  //we can upload image from camera or from gallery based on parameter
+  Future getImage(ImageSource media) async {
+    var img = await picker.pickImage(source: media);
+
+    setState(() {
+      image = img;
+    });
+  }
+
   @override
   void initState() {
     getUser();
@@ -35,6 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    YYDialog.init(context);
     return SafeArea(
         child: Column(
       children: [
@@ -61,23 +78,68 @@ class _ProfilePageState extends State<ProfilePage> {
               SizedBox(
                 height: 25,
               ),
-              Stack(children: [
-                CircleAvatar(
-                  radius: 50.0,
-                  backgroundColor: Color.fromARGB(255, 226, 235, 113),
-                ),
-                Positioned(
-                  right: 22,
-                  bottom: 18,
-                  child: Container(
-                      height: 10,
-                      width: 10,
-                      child: Icon(
-                          IconData(0xe04f, fontFamily: 'MaterialIcons'),
-                          size: 33,
-                          color: Colors.orange)),
-                )
-              ]),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Stack(clipBehavior: Clip.none, children: [
+                  CircleAvatar(
+                    radius: 50.0,
+                    backgroundColor: Color.fromARGB(255, 226, 235, 113),
+                  ),
+                  Positioned(
+                    right: -5,
+                    bottom: -5,
+                    child: Container(
+                        child: IconButton(
+                      icon: Icon(Icons.camera_alt),
+                      onPressed: () => {
+                        YYDialog().build()
+                          ..width = 240
+                          ..height = 180
+                          ..borderRadius = 10.0
+                          ..widget(
+                            Padding(
+                              padding: EdgeInsets.all(35),
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Column(
+                                  children: [
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                        textStyle:
+                                            const TextStyle(fontSize: 20),
+                                        padding: const EdgeInsets.all(10.0),
+                                      ),
+                                      onPressed: () {
+                                        getImage(ImageSource.camera);
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text("拍照"),
+                                    ),
+                                    ClipRRect(
+                                      child: TextButton(
+                                        style: TextButton.styleFrom(
+                                          textStyle:
+                                              const TextStyle(fontSize: 20),
+                                          padding: const EdgeInsets.all(10.0),
+                                        ),
+                                        onPressed: () {
+                                          getImage(ImageSource.gallery);
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text("從相簿選擇"),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                          ..show()
+                      },
+                    )),
+                  )
+                ]),
+              ),
               const SizedBox(
                 height: 10,
               ),
