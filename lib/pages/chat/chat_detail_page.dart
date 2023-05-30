@@ -39,6 +39,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   AppTheme theme = LightTheme();
   bool isDarkTheme = false;
+
   final currentUser = ChatUser(
     id: '1', // pass your user id
     name: 'Flutter', // pass your name
@@ -167,6 +168,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 isDarkTheme
                     ? Icons.brightness_4_outlined
                     : Icons.dark_mode_outlined,
+                color: theme.themeIconColor,
+              ),
+            ),
+            IconButton(
+              onPressed: null,
+              icon: Icon(
+                Icons.face,
                 color: theme.themeIconColor,
               ),
             ),

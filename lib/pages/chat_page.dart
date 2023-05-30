@@ -53,7 +53,6 @@ class _ChatPageState extends State<ChatPage> {
     return Invite;
   }
 
-
   Future<void> showModal() async {
     showModalBottomSheet(
         isScrollControlled: true,
@@ -96,9 +95,8 @@ class _ChatPageState extends State<ChatPage> {
         }
       }
       chatUsers.add(ChatUsers(
-          id: i["id"],
           text: i["roomname"],
-          secondaryText:i["messages"].length == 0 ? '跟新朋友打聲招呼吧!' : i["messages"][-1] ,
+          secondaryText: "Awesome Setup",
           image: "images/userImage1.jpeg",
           time: "Now"));
     }
