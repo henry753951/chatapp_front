@@ -105,6 +105,7 @@ class _FriendPageState extends State<FriendPage> {
   @override
   void initState() {
     super.initState();
+
     getFriends();
   }
 
@@ -234,11 +235,16 @@ class _FriendPageState extends State<FriendPage> {
 
   Future<dynamic> ShowNewMessage(BuildContext context, snapshot) {
     List<User> users = [];
+    List<User> UserGroup_clone = [];
     snapshot.then((value) {
       users = value;
+      for (User user in value) {
+        UserGroup_clone.add(user);
+      }
     });
     print(users);
 
+    String search_text = "";
     List<User> UserGroup = [];
     return showModalBottomSheet(
         context: context,
@@ -271,6 +277,32 @@ class _FriendPageState extends State<FriendPage> {
                           children: [
                             Flexible(
                               child: CupertinoTextField(
+                                onChanged: (value) {
+                                  search_text = value;
+                                  UserGroup_clone.clear();
+                                  print("搜尋馬:" + search_text);
+                                  //print(users[0].name);
+                                  if (search_text.length == 0 ||
+                                      search_text == "[]") {
+                                    for (User user in users) {
+                                      UserGroup_clone.add(user);
+                                    }
+                                  } else {
+                                    for (User user in users) {
+                                      if (user.name.contains(search_text) ||
+                                          user.username.contains(search_text)) {
+                                        UserGroup_clone.add(user);
+                                      }
+                                    }
+                                  }
+                                  for (int n = 0;
+                                      n < UserGroup_clone.length;
+                                      n++) {
+                                    print("成員:" + UserGroup_clone[n].name);
+                                  }
+                                  setState() {}
+                                  ;
+                                },
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 15, vertical: 10),
                                 decoration: BoxDecoration(
@@ -284,11 +316,13 @@ class _FriendPageState extends State<FriendPage> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                if (UserGroup.length == 2) {
+                                //下面建group
+                                /*if (UserGroup.length == 2) {
                                   MakeGroup("", UserGroup);
                                 } else {
                                   MakeGroup("group", UserGroup);
                                 }
+                                */
                               },
                               child: Container(
                                 margin: EdgeInsets.only(left: 10),
@@ -317,21 +351,24 @@ class _FriendPageState extends State<FriendPage> {
                         child: ListView.builder(
                             physics: BouncingScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: users.length,
+                            itemCount: UserGroup_clone.length,
                             itemBuilder: (context, index) {
                               return Container(
-                                color: UserGroup.contains(users[index])
-                                    ? Colors.grey[100]
-                                    : Colors.white,
+                                color:
+                                    UserGroup.contains(UserGroup_clone[index])
+                                        ? Colors.grey[100]
+                                        : Colors.white,
                                 child: ListTile(
                                   leading: CircleAvatar(
-                                    backgroundImage:
-                                        NetworkImage(users[index].avatar),
+                                    backgroundImage: NetworkImage(
+                                        UserGroup_clone[index].avatar),
                                   ),
-                                  title: Text(users[index].name),
-                                  subtitle: Text(users[index].username),
+                                  title: Text(UserGroup_clone[index].name),
+                                  subtitle:
+                                      Text(UserGroup_clone[index].username),
                                   trailing: IconButton(
-                                    icon: !UserGroup.contains(users[index])
+                                    icon: !UserGroup.contains(
+                                            UserGroup_clone[index])
                                         ? Icon(Icons.add)
                                         : Icon(Icons.remove),
                                     onPressed: () {
