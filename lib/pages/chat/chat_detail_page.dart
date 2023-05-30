@@ -190,7 +190,18 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
             IconButton(
-              onPressed: null,
+              onPressed: () {
+                showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    builder: (context) {
+                      return MembersModal(members: _chatController.chatUsers);
+                    }).then((value) => {
+                    });
+              },
               icon: Icon(
                 Icons.face,
                 color: theme.themeIconColor,
@@ -210,7 +221,6 @@ class _ChatScreenState extends State<ChatScreen> {
           backgroundColor: theme.backgroundColor,
         ),
         sendMessageConfig: SendMessageConfiguration(
-
           imagePickerIconsConfig: ImagePickerIconsConfiguration(
             cameraIconColor: theme.cameraIconColor,
             galleryIconColor: theme.galleryIconColor,
@@ -290,7 +300,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 color: theme.inComingChatBubbleColor,
                 boxShadow: [
                   BoxShadow(
-                    color: isDarkTheme ? Color.fromARGB(5, 0, 0, 0) : Colors.grey.shade200,
+                    color: isDarkTheme
+                        ? Color.fromARGB(5, 0, 0, 0)
+                        : Colors.grey.shade200,
                     offset: const Offset(0, 20),
                     blurRadius: 40,
                   )
@@ -354,20 +366,6 @@ class _ChatScreenState extends State<ChatScreen> {
     SocketService.stompClient.send(
         destination: "/app/chat",
         body: json.encode({"room_id": widget.room_id, "message": toServer}));
-  }
-
-  Future<void> showModal() async {
-    showModalBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25.0),
-        ),
-        builder: (context) {
-          return MembersModal();
-        }).then((value) => {
-          // 當modal關閉後，重新取得邀請數量
-        });
   }
 
   void _onThemeIconTap() {
