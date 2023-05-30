@@ -143,7 +143,7 @@ class _FriendPageState extends State<FriendPage> {
                   ),
                 ),
                 onPressed: () {
-                  ShowNewMessage(context);
+                  ShowNewMessage(context, futureFriendsList);
                 },
               ),
               IconButton(
@@ -231,22 +231,13 @@ class _FriendPageState extends State<FriendPage> {
     }
   }
 
-  Future<dynamic> ShowNewMessage(BuildContext context) {
+  Future<dynamic> ShowNewMessage(BuildContext context, snapshot) {
     List<User> users = [];
-    for (int i = 0; i < 10; i++) {
-      users.add(
-        User(
-          id: "123",
-          name: "陳小明",
-          username: "A1105502",
-          email: "",
-          avatar: "https://i.imgur.com/3x5q2Yk.jpg",
-          online: true,
-          lastSeen: 0,
-        ),
-      );
-    }
-    // Add list
+    snapshot.then((value) {
+      users = value;
+    });
+    print(users);
+    
     List<User> UserGroup = [];
     return showModalBottomSheet(
         context: context,
