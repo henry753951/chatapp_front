@@ -60,7 +60,7 @@ class _ChatScreenState extends State<ChatScreen> {
     Dio dio = new Dio();
     dio.options.headers["authorization"] = "Bearer ${token}";
     Response response =
-        await dio.get("${dotenv.get("baseUrl")}room/${widget.id}");
+        await dio.get("${dotenv.get("baseUrl")}room/${widget.room_id}");
     var data = response.data["data"];
     List<Message> message = [
       for (var i in data["messages"])
