@@ -5,11 +5,14 @@
 import 'dart:convert';
 
 import 'package:chatapp/services/socket.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:chatapp/components/theme.dart';
 import 'package:chatapp/components/data.dart';
 import 'package:chatview/chatview.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive/hive.dart';
 import 'package:chatapp/pages/friends_page.dart';
 
 MessageType getMessageType(String text) {
@@ -33,8 +36,6 @@ class ChatScreen extends StatefulWidget {
       required this.room_members})
       : super(key: key);
   final String name;
-  final String room_id;
-  final List<dynamic> room_members;
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
@@ -59,6 +60,37 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     ],
   );
+  Future<List<Message>> getmessage() async {
+    var auth_box = await Hive.openBox('auth');
+    var token = auth_box.get("token");
+    Dio dio = new Dio();
+    dio.options.headers["authorization"] = "Bearer ${token}";
+    Response response =
+        await dio.get("${dotenv.get("baseUrl")}room/${widget.id}");
+    var data = response.data["data"];
+    List<Message> message = [
+      for (var i in data["messages"])
+        Message(
+          id: i["id"],
+          createdAt: DateTime.fromMillisecondsSinceEpoch(i["time"]),
+          message: i["message"],
+          sendBy: i["sender"]["id"],
+          replyMessage: i["replyMessage"] == null
+              ? const ReplyMessage()
+              : ReplyMessage(
+                  messageId: i["replyMessage"]["id"],
+                  messageType:
+                      getMessageType(i["replyMessage"]["message_type"]),
+                  message: i["replyMessage"]["message"],
+                  replyBy: i["replyMessage"]["replyBy"],
+                  replyTo: i["replyMessage"]["replyTo"],
+                  voiceMessageDuration: null,
+                ),
+          messageType: getMessageType(i["message_type"]),
+        )
+    ];
+    return message;
+  }
 
   void onMessage(value) {
     print(value);
