@@ -84,6 +84,24 @@ class _FriendPageState extends State<FriendPage> {
   }
 
   @override
+  void MakeGroup(String groupname, List<User> ug) async {
+    List<String> uid_list = [];
+    for (User user in ug) {
+      uid_list.add(user.username);
+    }
+    var auth_box = await Hive.openBox('auth');
+    var token = auth_box.get("token");
+    Dio dio = Dio();
+    dio.options.headers["authorization"] = "Bearer ${token}";
+    Response response = await dio.post("${dotenv.get("baseUrl")}room/room",
+        data: {"roomname": groupname, "memberIds": uid_list});
+
+    if (response.data["success"]) {
+      getFriends();
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
     getFriends();
@@ -272,16 +290,25 @@ class _FriendPageState extends State<FriendPage> {
                                     TextStyle(color: Colors.grey, fontSize: 14),
                               ),
                             ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 10),
-                              decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 0, 0, 0),
-                                borderRadius: BorderRadius.circular(10),
+                            GestureDetector(
+                              onTap: () {
+                                if (UserGroup.length == 1) {
+                                  MakeGroup("testname", UserGroup);
+                                } else {
+                                  MakeGroup("group", UserGroup);
+                                }
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(left: 10),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 0, 0, 0),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text("開始",
+                                    style: TextStyle(color: Colors.white)),
                               ),
-                              child: Text("開始",
-                                  style: TextStyle(color: Colors.white)),
                             ),
                           ],
                         ),
