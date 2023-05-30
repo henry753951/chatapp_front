@@ -95,6 +95,7 @@ class _ChatPageState extends State<ChatPage> {
         }
       }
       chatUsers.add(ChatUsers(
+          id: i["id"],
           text: i["roomname"],
           secondaryText: "Awesome Setup",
           image: "images/userImage1.jpeg",
