@@ -20,14 +20,14 @@ import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 
 void main() async {
-  SocketService.init();
+
   await Hive.initFlutter();
   if (kReleaseMode) {
     await dotenv.load(fileName: ".env.production");
   } else {
     await dotenv.load(fileName: ".env");
   }
-
+  SocketService.init();
   runApp(const MyApp());
 }
 
